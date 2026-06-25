@@ -1,0 +1,15 @@
+# Крупное медиа не храним в репозитории сайта
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.psd
+*.raw
+
+# Системное
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+node_modules/
