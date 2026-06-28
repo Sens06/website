@@ -3,43 +3,406 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мой сайт</title>
+  <title>К.Л.А.Ц — Таргетолог и директолог в Москве</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <h1>Название проекта</h1>
-      <nav>
-        <a href="#about">О нас</a>
-        <a href="#services">Услуги</a>
-        <a href="#contact">Контакты</a>
+
+  <!-- ========== ШАПКА ========== -->
+  <header id="header" class="site-header">
+    <div class="container header-inner">
+      <a href="#hero" class="logo" aria-label="К.Л.А.Ц — на главную">К.Л.А.Ц</a>
+
+      <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
+        <ul>
+          <li><a href="#services">Услуги</a></li>
+          <li><a href="#how">Как работаем</a></li>
+          <li><a href="#cases">Кейсы</a></li>
+          <li><a href="#about">О нас</a></li>
+          <li><a href="#contact">Контакты</a></li>
+        </ul>
       </nav>
+
+      <a href="#contact" class="btn btn-cta header-cta">Оставить заявку</a>
+
+      <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="main-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </header>
 
-  <main class="container">
-    <section id="about">
-      <h2>О нас</h2>
-      <p>Короткое описание проекта.</p>
+  <main>
+
+    <!-- ========== HERO ========== -->
+    <section id="hero" class="hero">
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <h1 class="h-emboss">КЛАЦ — И ЗАЯВКИ ПОШЛИ</h1>
+          <p class="hero-tagline"><span class="accent">К.Л.А.Ц</span> — Креатив · Лидогенерация · Автоматизация · Цифровизация</p>
+          <p class="hero-sub">Делаем рекламу прибыльной, приводим качественные лиды и помогаем оптимизировать продажи.</p>
+          <div class="hero-offer">Экспресс-аудит за <strong>0 ₽</strong></div>
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-cta">Заказать аудит</a>
+            <a href="#services" class="btn btn-ghost">Получать заявки</a>
+          </div>
+        </div>
+        <div class="hero-logos" aria-label="Платформы, с которыми мы работаем">
+          <div class="logo-tile">Яндекс Директ</div>
+          <div class="logo-tile">РСЯ</div>
+          <div class="logo-tile">VK Ads</div>
+          <div class="logo-tile">TG Ads</div>
+          <div class="logo-tile">Avito Ads</div>
+          <div class="logo-tile">Gemini</div>
+          <div class="logo-tile">OpenAI</div>
+          <div class="logo-tile">Claude</div>
+        </div>
+      </div>
     </section>
 
-    <section id="services">
-      <h2>Услуги</h2>
-      <p>Что вы предлагаете.</p>
+    <!-- ========== УСЛУГИ ========== -->
+    <section id="services" class="section-services">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="h-emboss">ЧТО МЫ ДЕЛАЕМ</h2>
+          <p class="section-sub">Таргет, контекст, автоматизация и аналитика — под ключ для вашего бизнеса.</p>
+        </div>
+        <div class="cards-grid">
+
+          <!-- Карточка 1 -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M12 18l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Таргетированная реклама (VK Ads, Авито)</h3>
+            <p>Настраиваем поток целевого трафика за счёт убойных креативов и правильно подобранной целевой аудитории. Предоставляем предварительный медиаплан с плановой стоимостью квалифицированного лида.</p>
+          </article>
+
+          <!-- Карточка 2 -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="6" width="28" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M12 30h12M18 26v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M10 15l4 4 4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3>Контекстная реклама (Яндекс.Директ, РСЯ)</h3>
+            <p>Забираем горячих лидов — тех, кто готов купить ваш продукт или услугу прямо сейчас. Директолог с опытом в реальных нишах — не шаблонные настройки «по учебнику».</p>
+          </article>
+
+          <!-- Карточка 3 -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 30V20M12 30V14M18 30V18M24 30V10M30 30V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Автоматизация продаж</h3>
+            <p>Убираем ручной хаос из отдела продаж: настраиваем интеграцию с CRM-системами, внедряем чат-боты для первичной обработки и квалификации лидов, выявляем источники с самым эффективным ROI. Менеджеры работают с горячими лидами, а рутину закрывают системы.</p>
+          </article>
+
+          <!-- Карточка 4 -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 4C10.268 4 4 10.268 4 18s6.268 14 14 14 14-6.268 14-14S25.732 4 18 4z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M14 18c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M18 10v2M18 24v2M10 18h2M24 18h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Внедрение ИИ в бизнес</h3>
+            <p>Подключаем искусственный интеллект там, где он реально сокращает затраты: ИИ-анализ звонков, автоматические сценарии диалогов, умные ответы на рутинные вопросы клиентов. Меньше ручного труда — больше закрытых сделок.</p>
+          </article>
+
+          <!-- Карточка 5 -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 28l8-8 6 6 10-14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="4" y="4" width="28" height="28" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <h3>Анализ продаж</h3>
+            <p>Разбираем, откуда реально приходят деньги: какие каналы окупаются, где воронка «течёт», сколько стоит каждая заявка. Получаете цифры, а не ощущения — и понимаете, куда вкладывать бюджет дальше.</p>
+          </article>
+
+          <!-- Карточка 6 -->
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="24" cy="24" r="7" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M17 17l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Анализ конкурентов</h3>
+            <p>Смотрим, что делают конкуренты в рекламе и на сайтах: какие офферы работают, где у них слабые места. Используете чужой опыт, чтобы обойти рынок — без лишних экспериментов за свой счёт.</p>
+          </article>
+
+        </div>
+      </div>
     </section>
 
-    <section id="contact">
-      <h2>Контакты</h2>
-      <p>Как с вами связаться.</p>
+    <!-- ========== КАК МЫ РАБОТАЕМ ========== -->
+    <section id="how" class="section-how">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="h-emboss">КАК МЫ РАБОТАЕМ</h2>
+        </div>
+        <div class="steps">
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">01</div>
+            <h3>Заявка</h3>
+            <p>Оставляете заявку. Связываемся в течение дня, обсуждаем задачу.</p>
+          </div>
+
+          <div class="step-arrow" aria-hidden="true"></div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">02</div>
+            <h3>Аудит и разбор</h3>
+            <p>Анализируем текущую рекламу или нишу. Показываем, где деньги уходят впустую и что запустить первым.</p>
+          </div>
+
+          <div class="step-arrow" aria-hidden="true"></div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">03</div>
+            <h3>Запуск</h3>
+            <p>Настраиваем кампании под вашу аудиторию и бюджет. Всё согласовываем до старта — без сюрпризов.</p>
+          </div>
+
+          <div class="step-arrow" aria-hidden="true"></div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">04</div>
+            <h3>Результат и отчёт</h3>
+            <p>Ведём рекламу, контролируем показатели, присылаем отчёты. Вы видите, откуда пришли заявки и сколько они стоят.</p>
+          </div>
+
+        </div>
+      </div>
     </section>
+
+    <!-- ========== КЕЙСЫ ========== -->
+    <section id="cases" class="section-cases">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="h-emboss">КЕЙСЫ</h2>
+          <p class="section-sub">Реальные результаты для реального бизнеса.</p>
+        </div>
+        <div class="cards-grid cards-grid--cases">
+
+          <article class="card card--case" data-case="1">
+            <h3 class="case-title"><span class="placeholder">&lt;Проект&gt;</span></h3>
+            <ul class="case-meta">
+              <li><span class="case-label">Площадка</span><span class="placeholder">&lt;основная площадка&gt;</span></li>
+              <li><span class="case-label">Город</span><span class="placeholder">&lt;город&gt;</span></li>
+              <li><span class="case-label">Бюджет</span><span class="placeholder">&lt;бюджет&gt;</span></li>
+              <li><span class="case-label">Доп. услуги</span><span class="placeholder">&lt;доп. услуги&gt;</span></li>
+            </ul>
+            <button type="button" class="case-more" aria-haspopup="dialog">Подробнее →</button>
+            <template class="case-full">
+              <h3>&lt;Заголовок кейса&gt;</h3>
+              <p class="modal-meta"><span class="placeholder">&lt;площадка · город · бюджет · доп. услуги&gt;</span></p>
+              <p><span class="placeholder">&lt;Подробная статья кейса: задача → что сделали → результат с цифрами. Заполнить.&gt;</span></p>
+            </template>
+          </article>
+
+          <article class="card card--case" data-case="2">
+            <h3 class="case-title"><span class="placeholder">&lt;Проект&gt;</span></h3>
+            <ul class="case-meta">
+              <li><span class="case-label">Площадка</span><span class="placeholder">&lt;основная площадка&gt;</span></li>
+              <li><span class="case-label">Город</span><span class="placeholder">&lt;город&gt;</span></li>
+              <li><span class="case-label">Бюджет</span><span class="placeholder">&lt;бюджет&gt;</span></li>
+              <li><span class="case-label">Доп. услуги</span><span class="placeholder">&lt;доп. услуги&gt;</span></li>
+            </ul>
+            <button type="button" class="case-more" aria-haspopup="dialog">Подробнее →</button>
+            <template class="case-full">
+              <h3>&lt;Заголовок кейса&gt;</h3>
+              <p class="modal-meta"><span class="placeholder">&lt;площадка · город · бюджет · доп. услуги&gt;</span></p>
+              <p><span class="placeholder">&lt;Подробная статья кейса: задача → что сделали → результат с цифрами. Заполнить.&gt;</span></p>
+            </template>
+          </article>
+
+          <article class="card card--case" data-case="3">
+            <h3 class="case-title"><span class="placeholder">&lt;Проект&gt;</span></h3>
+            <ul class="case-meta">
+              <li><span class="case-label">Площадка</span><span class="placeholder">&lt;основная площадка&gt;</span></li>
+              <li><span class="case-label">Город</span><span class="placeholder">&lt;город&gt;</span></li>
+              <li><span class="case-label">Бюджет</span><span class="placeholder">&lt;бюджет&gt;</span></li>
+              <li><span class="case-label">Доп. услуги</span><span class="placeholder">&lt;доп. услуги&gt;</span></li>
+            </ul>
+            <button type="button" class="case-more" aria-haspopup="dialog">Подробнее →</button>
+            <template class="case-full">
+              <h3>&lt;Заголовок кейса&gt;</h3>
+              <p class="modal-meta"><span class="placeholder">&lt;площадка · город · бюджет · доп. услуги&gt;</span></p>
+              <p><span class="placeholder">&lt;Подробная статья кейса: задача → что сделали → результат с цифрами. Заполнить.&gt;</span></p>
+            </template>
+          </article>
+
+        </div>
+        <p class="cases-soon">Скоро здесь будет больше кейсов — работа идёт.</p>
+      </div>
+    </section>
+
+    <!-- ========== О НАС ========== -->
+    <section id="about" class="section-about">
+      <div class="container about-inner">
+        <div class="about-photo">
+          <div class="photo-placeholder" role="img" aria-label="Фото Бакулина Сергея Владимировича">
+            <span class="placeholder">&lt;фото&gt;</span>
+          </div>
+          <p class="photo-caption"><strong>Бакулин Сергей</strong> — Team-lead К.Л.А.Ц</p>
+          <p class="photo-bio">Трафик-менеджер с опытом более 5 лет. Дипломированный специалист по системам искусственного интеллекта. За плечами более 40 успешных проектов в автоимпорте, строительстве, ремонте и e-commerce.</p>
+        </div>
+        <div class="about-text">
+          <h2 class="h-emboss">ПОЧЕМУ К.Л.А.Ц</h2>
+          <p class="section-sub about-tagline">Реклама, автоматизация и аналитика в одной связке — растим прибыль, а не бюджет</p>
+          <p>К.Л.А.Ц — креативная команда лидогенерации и автоматизации продаж для малого и среднего бизнеса. Не «всё для всех»: специализируемся на интернет-магазинах, строительстве и ремонте, автоимпорте. Разбираем бизнес-процессы по косточкам и помогаем хорошим предпринимателям достичь управляемого роста прибыли.</p>
+          <ul class="about-list">
+            <li>
+              <span class="about-marker" aria-hidden="true">—</span>
+              Специализируемся на 3-х направлениях — понимаем вашу аудиторию без долгого погружения
+            </li>
+            <li>
+              <span class="about-marker" aria-hidden="true">—</span>
+              Ведение рекламы, а не разовая настройка — отвечаем за результат в динамике
+            </li>
+            <li>
+              <span class="about-marker" aria-hidden="true">—</span>
+              Отчёт после каждого периода — вы видите цифры, а не слышите «всё идёт хорошо»
+            </li>
+            <li>
+              <span class="about-marker" aria-hidden="true">—</span>
+              Работаем по всей России — основные клиенты в Москве, опыт в регионах
+            </li>
+          </ul>
+          <a href="#contact" class="btn btn-cta about-cta">Оставить заявку</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ФОРМА ЗАЯВКИ ========== -->
+    <section id="contact" class="section-contact">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="h-emboss">ПОЛУЧИТЕ БЕСПЛАТНЫЙ ЭКСПРЕСС-АУДИТ</h2>
+          <p class="section-sub">Разберём вашу рекламу или нишу и покажем точки роста.</p>
+        </div>
+
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="field-name">Имя</label>
+              <input type="text" id="field-name" name="name" placeholder="Ваше имя" autocomplete="given-name" required>
+              <span class="field-error" id="error-name" role="alert"></span>
+            </div>
+            <div class="form-field">
+              <label for="field-niche">Ниша бизнеса</label>
+              <input type="text" id="field-niche" name="niche" placeholder="Например: строительство, e-commerce">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="field-method">Удобный способ связи</label>
+              <select id="field-method" name="method" required>
+                <option value="" selected disabled>Выберите способ</option>
+                <option value="telegram">Telegram</option>
+                <option value="phone">Телефон</option>
+                <option value="vk">VK</option>
+              </select>
+              <span class="field-error" id="error-method" role="alert"></span>
+            </div>
+            <div class="form-field">
+              <label for="field-contact" id="label-contact">Контакт</label>
+              <input type="text" id="field-contact" name="contact" placeholder="Сначала выберите способ связи" disabled required>
+              <span class="field-error" id="error-contact" role="alert"></span>
+            </div>
+          </div>
+          <div class="form-field form-field--full">
+            <label for="field-comment">Комментарий <span class="field-optional">(необязательно)</span></label>
+            <textarea id="field-comment" name="comment" placeholder="Расскажите о задаче, бюджете или текущей рекламе" rows="4"></textarea>
+          </div>
+          <div class="form-consent">
+            <input type="checkbox" id="field-consent" name="consent" required>
+            <label for="field-consent">Я даю согласие на обработку персональных данных и принимаю <a href="privacy.html" target="_blank" rel="noopener noreferrer">политику конфиденциальности</a>.</label>
+          </div>
+          <span class="field-error" id="error-consent" role="alert"></span>
+          <button type="submit" class="btn btn-cta btn-submit">Получить экспресс-аудит</button>
+        </form>
+      </div>
+    </section>
+
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2026 Название проекта</p>
+  <!-- ========== ПОДВАЛ ========== -->
+  <footer id="footer" class="site-footer">
+    <div class="footer-divider"></div>
+    <div class="container footer-inner">
+
+      <div class="footer-brand">
+        <a href="#hero" class="logo footer-logo" aria-label="К.Л.А.Ц — на главную">К.Л.А.Ц</a>
+        <p class="footer-slogan">Креатив · Лидогенерация · Автоматизация · Цифровизация</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <ul>
+          <li><a href="#services">Услуги</a></li>
+          <li><a href="#how">Как работаем</a></li>
+          <li><a href="#cases">Кейсы</a></li>
+          <li><a href="#about">О нас</a></li>
+          <li><a href="#contact">Контакты</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer-contacts">
+        <a href="https://t.me/bsvtarget" class="footer-contact-link" target="_blank" rel="noopener noreferrer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M21.5 3L2 10.5l7 2.5 2.5 7L21.5 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M9 13l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          @bsvtarget
+        </a>
+        <a href="tel:+79298301575" class="footer-contact-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6.6 10.8a15.2 15.2 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11.4 11.4 0 003.56.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.4 11.4 0 00.56 3.56 1 1 0 01-.24 1L6.6 10.8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          +7 929 830-15-75
+        </a>
+      </div>
+
+    </div>
+    <div class="container footer-bottom">
+      <p class="footer-legal">
+        ИП Путилов Александр Евгеньевич · ИНН 762703040128<br>
+        150526, Россия, Ярославская область, Ярославский район, Ананьино, ул. Садовая, 26
+      </p>
+      <div class="footer-bottom-row">
+        <p class="footer-copy">© 2026 К.Л.А.Ц</p>
+        <a href="privacy.html" class="footer-policy-link">Политика конфиденциальности</a>
+      </div>
     </div>
   </footer>
+
+  <!-- ========== МОДАЛКА КЕЙСА ========== -->
+  <div class="modal" id="case-modal">
+    <div class="modal-overlay" data-close></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="Подробнее о кейсе">
+      <button type="button" class="modal-close" data-close aria-label="Закрыть">&times;</button>
+      <div class="modal-body" id="case-modal-body"></div>
+      <a href="#contact" class="btn btn-cta modal-cta" data-close>Заказать консультацию</a>
+    </div>
+  </div>
 
   <script src="js/main.js"></script>
 </body>
