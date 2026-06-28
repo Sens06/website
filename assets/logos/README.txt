@@ -3,13 +3,14 @@
 Положи сюда файлы со СТРОГО такими именами (я по ним подключу):
 
   yandex-direct.svg   — Яндекс Директ
-  rsya.svg            — РСЯ (Рекламная сеть Яндекса)
+  ozon.svg            — Ozon (рекламный кабинет Ozon)
   vk-ads.svg          — VK Ads
   tg-ads.svg          — Telegram Ads
   avito-ads.svg       — Avito Ads
   gemini.svg          — Google Gemini
   openai.svg          — OpenAI
   claude.svg          — Claude (Anthropic)
+  wb-partners.svg     — WB Partners (Wildberries)
 
 Формат: предпочтительно SVG. PNG с прозрачным фоном тоже подойдёт
 (тогда расширение .png — скажи, я поправлю пути).

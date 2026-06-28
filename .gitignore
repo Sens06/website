@@ -5,6 +5,7 @@
 *.mkv
 *.psd
 *.raw
+*.pdf
 
 # Системное
 .DS_Store

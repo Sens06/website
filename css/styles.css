@@ -219,6 +219,9 @@ h3 {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--font-heading);
   font-size: 22px;
   font-weight: 600;
@@ -227,6 +230,41 @@ h3 {
   text-transform: uppercase;
   flex-shrink: 0;
   transition: color 0.2s;
+}
+
+.logo-badge {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--color-accent);
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-badge img {
+  width: 140%;
+  height: 140%;
+  object-fit: cover;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.logo-decode {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-top: 4px;
 }
 
 .logo:hover {
@@ -389,8 +427,22 @@ h3 {
   font-size: 18px;
   color: var(--color-text-muted);
   line-height: 1.6;
-  margin-bottom: 36px;
+  margin-bottom: 16px;
   max-width: 580px;
+}
+
+.hero-question {
+  margin-bottom: 28px;
+  max-width: 520px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.hero-question .accent {
+  color: var(--color-accent);
+  font-weight: 600;
 }
 
 .hero-actions {
@@ -399,64 +451,149 @@ h3 {
   flex-wrap: wrap;
 }
 
-/* CSS-декор hero */
-.hero-logos {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  width: 42%;
-  max-width: 360px;
+/* Визуал hero — маскот КЛАЦ */
+.hero-visual {
+  position: relative;
+  width: 50%;
+  max-width: 780px;
   flex-shrink: 0;
-  z-index: 1;
-}
-
-.logo-tile {
-  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  background: rgba(255, 255, 255, 0.02);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-  color: var(--color-text-muted);
-  font-family: var(--font-heading);
-  font-weight: 500;
-  font-size: 13px;
-  letter-spacing: 0.3px;
-  animation: logoFloat 7s ease-in-out infinite;
+  transform: translateX(-33%);
+  z-index: 1;
 }
 
-.logo-tile .logo-img {
-  max-width: 72%;
-  max-height: 60%;
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.20), transparent 70%);
+  filter: blur(12px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.hero-dog {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 26px rgba(255, 255, 255, 0.30)) drop-shadow(0 12px 26px rgba(0, 0, 0, 0.5));
+}
+
+.hero-bubble {
+  position: absolute;
+  top: 8%;
+  right: 7%;
+  max-width: 180px;
+  background: transparent;
+  border: 2px solid var(--color-accent);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.25;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 14px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 0 16px rgba(255, 210, 74, 0.30);
+  z-index: 2;
+  animation: bubbleIn 0.5s ease-out 1.2s both;
+}
+
+/* контурный хвостик: оранжевый треугольник + тёмный поверх для «пустоты» */
+.hero-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 24px;
+  border-width: 12px 8px 0 8px;
+  border-style: solid;
+  border-color: var(--color-accent) transparent transparent transparent;
+  z-index: 1;
+}
+
+.hero-bubble::before {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 26px;
+  border-width: 9px 6px 0 6px;
+  border-style: solid;
+  border-color: #18181b transparent transparent transparent;
+  z-index: 2;
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Бегущая лента логотипов */
+.logos-marquee {
+  padding: 36px 0;
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.marquee-title {
+  text-align: center;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+
+.marquee {
+  overflow: hidden;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  animation: marqueeScroll 45s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-chip {
+  flex: 0 0 auto;
+  width: 120px;
+  height: 72px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.marquee-chip img {
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 
-/* шахматное смещение — средний столбец ниже */
-.hero-logos .logo-tile:nth-child(3n + 2) {
-  margin-top: 28px;
-}
-
-/* разные задержки — анимация вразнобой */
-.logo-tile:nth-child(1) { animation-delay: 0s; }
-.logo-tile:nth-child(2) { animation-delay: 0.8s; }
-.logo-tile:nth-child(3) { animation-delay: 1.6s; }
-.logo-tile:nth-child(4) { animation-delay: 0.4s; }
-.logo-tile:nth-child(5) { animation-delay: 1.2s; }
-.logo-tile:nth-child(6) { animation-delay: 2s; }
-.logo-tile:nth-child(7) { animation-delay: 0.6s; }
-.logo-tile:nth-child(8) { animation-delay: 1.4s; }
-
-@keyframes logoFloat {
-  0%, 100% { transform: translateY(0); opacity: 0.8; }
-  50% { transform: translateY(-7px); opacity: 1; }
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .logo-tile { animation: none; opacity: 1; }
+  .marquee-track { animation: none; }
+  .hero-bubble { animation: none; opacity: 1; }
 }
 
 /* ============================================================
@@ -1076,27 +1213,6 @@ h3 {
    ПЛАНШЕТ: min-width 481px
    ============================================================ */
 @media (min-width: 481px) {
-  /* Шапка: скрыть бургер, показать nav */
-  .burger {
-    display: none;
-  }
-
-  .main-nav {
-    position: static;
-    transform: none !important;
-    background: none;
-    display: block;
-  }
-
-  .main-nav ul {
-    flex-direction: row;
-  }
-
-  .main-nav a {
-    font-size: 13px;
-    padding: 6px 10px;
-  }
-
   /* Карточки 2 в ряд */
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1238,7 +1354,30 @@ h3 {
 /* ============================================================
    МОБИЛЬНЫЙ: max-width 480px
    ============================================================ */
-@media (max-width: 480px) {
+/* Десктоп: горизонтальное меню. Планшеты и телефоны (≤1024) — бургер */
+@media (min-width: 1025px) {
+  .burger {
+    display: none;
+  }
+
+  .main-nav {
+    position: static;
+    transform: none;
+    background: none;
+    display: block;
+  }
+
+  .main-nav ul {
+    flex-direction: row;
+  }
+
+  .main-nav a {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 1024px) {
   /* Типографика */
   h1 { font-size: 34px; }
   h2 { font-size: 27px; }
@@ -1257,6 +1396,10 @@ h3 {
 
   /* Шапка */
   .header-cta {
+    display: none;
+  }
+
+  .logo-decode {
     display: none;
   }
 
@@ -1299,7 +1442,7 @@ h3 {
 
   /* Hero */
   .hero {
-    min-height: 80vh;
+    min-height: auto;
     align-items: flex-start;
   }
 
@@ -1309,7 +1452,27 @@ h3 {
     padding-bottom: 48px;
   }
 
-  .hero-logos { display: none; }
+  .hero-visual {
+    width: 78%;
+    max-width: 300px;
+    margin: 8px auto 0;
+    transform: none;
+    flex-direction: column;
+  }
+
+  .hero-bubble {
+    position: static;
+    max-width: 260px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .hero-bubble::after,
+  .hero-bubble::before {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
   .hero-actions {
     flex-direction: column;

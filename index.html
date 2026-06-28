@@ -14,7 +14,13 @@
   <!-- ========== ШАПКА ========== -->
   <header id="header" class="site-header">
     <div class="container header-inner">
-      <a href="#hero" class="logo" aria-label="К.Л.А.Ц — на главную">К.Л.А.Ц</a>
+      <a href="#hero" class="logo" aria-label="К.Л.А.Ц — на главную">
+        <span class="logo-badge"><img src="assets/logo.jpeg" alt=""></span>
+        <span class="logo-text">
+          <span class="logo-name">К.Л.А.Ц</span>
+          <span class="logo-decode" aria-hidden="true">Креатив · Лидогенерация · Автоматизация · Цифровизация</span>
+        </span>
+      </a>
 
       <nav class="main-nav" id="main-nav" aria-label="Основная навигация">
         <ul>
@@ -43,23 +49,42 @@
       <div class="container hero-inner">
         <div class="hero-content">
           <h1 class="h-emboss">КЛАЦ — И ЗАЯВКИ ПОШЛИ</h1>
-          <p class="hero-tagline"><span class="accent">К.Л.А.Ц</span> — Креатив · Лидогенерация · Автоматизация · Цифровизация</p>
           <p class="hero-sub">Делаем рекламу прибыльной, приводим качественные лиды и помогаем оптимизировать продажи.</p>
-          <div class="hero-offer">Экспресс-аудит за <strong>0 ₽</strong></div>
+          <p class="hero-question">Хочешь узнать, как увеличить прибыль и автоматизировать рутинные процессы?<br><span class="accent">Клацни на кнопку</span> — и получи бесплатный экспресс-аудит.</p>
           <div class="hero-actions">
             <a href="#contact" class="btn btn-cta">Заказать аудит</a>
-            <a href="#services" class="btn btn-ghost">Получать заявки</a>
           </div>
         </div>
-        <div class="hero-logos" aria-label="Платформы, с которыми мы работаем">
-          <div class="logo-tile">Яндекс Директ</div>
-          <div class="logo-tile">РСЯ</div>
-          <div class="logo-tile">VK Ads</div>
-          <div class="logo-tile">TG Ads</div>
-          <div class="logo-tile">Avito Ads</div>
-          <div class="logo-tile">Gemini</div>
-          <div class="logo-tile">OpenAI</div>
-          <div class="logo-tile">Claude</div>
+        <div class="hero-visual">
+          <div class="hero-bubble">Я доберман КЛАЦ — лучший друг предпринимателей</div>
+          <img class="hero-dog" src="assets/clats.png" alt="Маскот К.Л.А.Ц — доберман">
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ЛЕНТА ЛОГОТИПОВ ========== -->
+    <section class="logos-marquee" aria-label="Площадки и ИИ, с которыми мы работаем">
+      <p class="marquee-title">Работаем с площадками и ИИ</p>
+      <div class="marquee">
+        <div class="marquee-track">
+          <div class="marquee-chip"><img src="assets/logos/yandex-direct.png" alt="Яндекс Директ"></div>
+          <div class="marquee-chip"><img src="assets/logos/ozon.png" alt="Ozon"></div>
+          <div class="marquee-chip"><img src="assets/logos/vk-ads.png" alt="VK Ads"></div>
+          <div class="marquee-chip"><img src="assets/logos/tg-ads.png" alt="Telegram Ads"></div>
+          <div class="marquee-chip"><img src="assets/logos/avito-ads.png" alt="Avito"></div>
+          <div class="marquee-chip"><img src="assets/logos/gemini.png" alt="Google Gemini"></div>
+          <div class="marquee-chip"><img src="assets/logos/openai.png" alt="OpenAI"></div>
+          <div class="marquee-chip"><img src="assets/logos/claude.png" alt="Claude"></div>
+          <div class="marquee-chip"><img src="assets/logos/wb-partners.png" alt="WB Partners"></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/yandex-direct.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/ozon.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/vk-ads.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/tg-ads.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/avito-ads.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/gemini.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/openai.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/claude.png" alt=""></div>
+          <div class="marquee-chip" aria-hidden="true"><img src="assets/logos/wb-partners.png" alt=""></div>
         </div>
       </div>
     </section>
@@ -144,7 +169,7 @@
               </svg>
             </div>
             <h3>Анализ конкурентов</h3>
-            <p>Смотрим, что делают конкуренты в рекламе и на сайтах: какие офферы работают, где у них слабые места. Используете чужой опыт, чтобы обойти рынок — без лишних экспериментов за свой счёт.</p>
+            <p>Изучаем действия конкурентов в рекламе и на сайтах: какие офферы работают, где у них слабые места. Находим возможности завоёвывать рынок — без лишних экспериментов за свой счёт.</p>
           </article>
 
         </div>
@@ -268,23 +293,27 @@
         <div class="about-text">
           <h2 class="h-emboss">ПОЧЕМУ К.Л.А.Ц</h2>
           <p class="section-sub about-tagline">Реклама, автоматизация и аналитика в одной связке — растим прибыль, а не бюджет</p>
-          <p>К.Л.А.Ц — креативная команда лидогенерации и автоматизации продаж для малого и среднего бизнеса. Не «всё для всех»: специализируемся на интернет-магазинах, строительстве и ремонте, автоимпорте. Разбираем бизнес-процессы по косточкам и помогаем хорошим предпринимателям достичь управляемого роста прибыли.</p>
+          <p>К.Л.А.Ц — Креатив · Лидогенерация · Автоматизация · Цифровизация. Обладаем экспертностью в строительстве и ремонте, автоимпорте, e-commerce и других нишах. Разбираем бизнес-процессы по косточкам и помогаем хорошим предпринимателям достичь планомерного роста прибыли.</p>
           <ul class="about-list">
             <li>
               <span class="about-marker" aria-hidden="true">—</span>
-              Специализируемся на 3-х направлениях — понимаем вашу аудиторию без долгого погружения
+              Готовые рабочие воронки под стройку/ремонт, автоимпорт и e-commerce — экономите недели на «раскачку»
             </li>
             <li>
               <span class="about-marker" aria-hidden="true">—</span>
-              Ведение рекламы, а не разовая настройка — отвечаем за результат в динамике
+              Креативы, которые цепляют за живое — их досматривают и кликают, а не пролистывают
             </li>
             <li>
               <span class="about-marker" aria-hidden="true">—</span>
-              Отчёт после каждого периода — вы видите цифры, а не слышите «всё идёт хорошо»
+              Ежедневно работаем с кампаниями — тестируем, докручиваем, усиливаем. Качество лидов растёт, цена снижается
             </li>
             <li>
               <span class="about-marker" aria-hidden="true">—</span>
-              Работаем по всей России — основные клиенты в Москве, опыт в регионах
+              Подробные отчёты и разбор обратной связи — видите цену лида, окупаемость и выручку
+            </li>
+            <li>
+              <span class="about-marker" aria-hidden="true">—</span>
+              Применяем ИИ и свежие инструменты раньше конкурентов — вы получаете преимущество, пока другие раскачиваются
             </li>
           </ul>
           <a href="#contact" class="btn btn-cta about-cta">Оставить заявку</a>
@@ -351,7 +380,10 @@
     <div class="container footer-inner">
 
       <div class="footer-brand">
-        <a href="#hero" class="logo footer-logo" aria-label="К.Л.А.Ц — на главную">К.Л.А.Ц</a>
+        <a href="#hero" class="logo footer-logo" aria-label="К.Л.А.Ц — на главную">
+          <span class="logo-badge"><img src="assets/logo.jpeg" alt=""></span>
+          <span>К.Л.А.Ц</span>
+        </a>
         <p class="footer-slogan">Креатив · Лидогенерация · Автоматизация · Цифровизация</p>
       </div>
 
