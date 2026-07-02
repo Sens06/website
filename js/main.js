@@ -223,45 +223,126 @@
     });
   }
 
-  /* ── Модалка кейса ── */
-  const caseModal = document.getElementById('case-modal');
-  const caseModalBody = document.getElementById('case-modal-body');
-  const caseCards = document.querySelectorAll('.card--case');
-  let lastCaseFocus = null;
+  /* ── Кейсы: барабан ── */
+  const drum = document.getElementById('cases-drum');
+  if (drum) {
+    const track = drum.querySelector('.drum-track');
+    const cards = Array.prototype.slice.call(track.querySelectorAll('.drum-card'));
+    const upBtn = drum.querySelector('.drum-btn--up');
+    const downBtn = drum.querySelector('.drum-btn--down');
+    const dotsBox = drum.querySelector('.drum-dots');
+    const n = cards.length;
+    let active = 0;
 
-  function openCaseModal(card) {
-    if (!caseModal || !caseModalBody) return;
-    const full = card.querySelector('.case-full');
-    caseModalBody.innerHTML = '';
-    if (full && full.content) {
-      caseModalBody.appendChild(full.content.cloneNode(true));
-    }
-    lastCaseFocus = document.activeElement;
-    caseModal.classList.add('is-open');
-    const closeBtn = caseModal.querySelector('.modal-close');
-    if (closeBtn) closeBtn.focus();
-  }
-
-  function closeCaseModal() {
-    if (!caseModal) return;
-    caseModal.classList.remove('is-open');
-    if (lastCaseFocus && lastCaseFocus.focus) lastCaseFocus.focus();
-  }
-
-  caseCards.forEach(function (card) {
-    card.addEventListener('click', function () {
-      openCaseModal(card);
+    /* точки-индикаторы */
+    const dots = cards.map(function (_, i) {
+      const d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'drum-dot';
+      d.setAttribute('aria-label', 'Кейс ' + (i + 1));
+      d.addEventListener('click', function () { go(i); });
+      if (dotsBox) dotsBox.appendChild(d);
+      return d;
     });
-  });
 
-  if (caseModal) {
-    caseModal.querySelectorAll('[data-close]').forEach(function (el) {
-      el.addEventListener('click', closeCaseModal);
+    function render() {
+      const baseH = cards[0].offsetHeight || 168;
+      const step = baseH * 0.66 + 20;
+      cards.forEach(function (card, i) {
+        let off = i - active;
+        if (off > n / 2) off -= n;
+        if (off < -n / 2) off += n;
+        const abs = Math.abs(off);
+        const scale = off === 0 ? 1 : 0.84;
+        const opacity = off === 0 ? 1 : (abs === 1 ? 0.4 : 0);
+        card.style.transform =
+          'translate(-50%, -50%) translateY(' + (off * step) + 'px) scale(' + scale + ')';
+        card.style.opacity = opacity;
+        card.style.zIndex = String(10 - abs);
+        card.style.pointerEvents = abs <= 1 ? 'auto' : 'none';
+        card.classList.toggle('is-active', off === 0);
+        card.setAttribute('aria-hidden', off === 0 ? 'false' : 'true');
+        card.tabIndex = off === 0 ? 0 : -1;
+      });
+      dots.forEach(function (d, i) { d.classList.toggle('is-on', i === active); });
+    }
+
+    function go(i) { active = ((i % n) + n) % n; render(); }
+    function next() { go(active + 1); }
+    function prev() { go(active - 1); }
+
+    if (upBtn) upBtn.addEventListener('click', prev);
+    if (downBtn) downBtn.addEventListener('click', next);
+
+    /* клик по карточке: если не активна — вывести в центр, если активна — перейти */
+    cards.forEach(function (card, i) {
+      card.addEventListener('click', function (e) {
+        if (i !== active) { e.preventDefault(); go(i); }
+      });
+    });
+
+    /* стрелки клавиатуры */
+    drum.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); next(); }
+    });
+
+    /* свайп по вертикали (мобайл) */
+    let startY = null;
+    track.addEventListener('touchstart', function (e) {
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+    track.addEventListener('touchend', function (e) {
+      if (startY === null) return;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dy) > 40) { if (dy < 0) next(); else prev(); }
+      startY = null;
+    });
+
+    window.addEventListener('resize', render);
+    render();
+  }
+
+  /* ── Лайтбокс для скринов кейсов ── */
+  const figImgs = document.querySelectorAll('.case-figure img');
+  if (figImgs.length) {
+    const lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.innerHTML = '<button type="button" class="lightbox-close" aria-label="Закрыть">&times;</button><img alt="">';
+    document.body.appendChild(lb);
+
+    const lbImg = lb.querySelector('img');
+    const lbClose = lb.querySelector('.lightbox-close');
+    let lastFocus = null;
+
+    function openLb(src, alt) {
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lastFocus = document.activeElement;
+      lb.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      lbClose.focus();
+    }
+
+    function closeLb() {
+      lb.classList.remove('is-open');
+      document.body.style.overflow = '';
+      lbImg.removeAttribute('src');
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    figImgs.forEach(function (img) {
+      img.addEventListener('click', function () {
+        openLb(img.currentSrc || img.src, img.alt);
+      });
+    });
+
+    lbClose.addEventListener('click', closeLb);
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb) closeLb();
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && caseModal.classList.contains('is-open')) {
-        closeCaseModal();
-      }
+      if (e.key === 'Escape' && lb.classList.contains('is-open')) closeLb();
     });
   }
 
