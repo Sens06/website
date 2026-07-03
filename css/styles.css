@@ -13,7 +13,7 @@
   --color-accent-hover:  #B5611E;
   --color-accent-soft:   rgba(200, 114, 42, 0.14);
   --color-text:          #F0F0F0;
-  --color-text-muted:    #9A9A9A;
+  --color-text-muted:    #B8B8B8;
   --color-border:        #2A2A2A;
   --color-white:         #FFFFFF;
 
@@ -429,6 +429,30 @@ h3 {
   line-height: 1.6;
   margin-bottom: 16px;
   max-width: 580px;
+}
+
+.hero-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-bottom: 24px;
+  max-width: 560px;
+}
+
+.hero-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  color: var(--color-text);
+  line-height: 1.35;
+}
+
+.hero-list li svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: var(--color-accent);
 }
 
 .hero-question {
@@ -878,6 +902,16 @@ h3 {
   color: var(--color-text-muted);
 }
 
+.about-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 280px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+}
+
 .photo-caption {
   font-size: var(--text-small);
   color: var(--color-text-muted);
@@ -1237,7 +1271,8 @@ h3 {
     gap: var(--gap-md);
   }
 
-  .photo-placeholder {
+  .photo-placeholder,
+  .about-img {
     aspect-ratio: 3 / 4;
     max-height: 380px;
   }
@@ -1331,7 +1366,8 @@ h3 {
     gap: var(--gap-lg);
   }
 
-  .photo-placeholder {
+  .photo-placeholder,
+  .about-img {
     aspect-ratio: 3 / 4;
     max-height: 480px;
   }
@@ -2055,4 +2091,40 @@ h3 {
 @media (max-width: 560px) {
   .case-end { flex-direction: column; }
   .case-end .btn { width: 100%; }
+}
+
+/* ============================================================
+   ТЕЛЕФОН: крупнее текст-описания (≤600px)
+   ============================================================ */
+@media (max-width: 600px) {
+  body { font-size: 16px; }
+
+  .section-sub { font-size: 17px; }
+
+  /* Карточки услуг */
+  .card p { font-size: 17px; line-height: 1.65; }
+
+  /* Как работаем */
+  .step p { font-size: 16px; }
+
+  /* Барабан кейсов */
+  .drum-niche { font-size: 20px; }
+  .drum-tags span { font-size: 12px; }
+  .drum-extra { font-size: 17px; }
+  .drum-result { font-size: 18px; }
+
+  /* Hero */
+  .hero-sub { font-size: 17px; }
+  .hero-question { font-size: 17px; }
+  .hero-list li { font-size: 16px; }
+  .hero-list li svg { width: 20px; height: 20px; }
+
+  /* О нас */
+  .about-text p { font-size: 16px; }
+  .about-list li { font-size: 16px; }
+
+  /* Страницы кейсов */
+  .case-article p { font-size: 17px; }
+  .case-facts li { font-size: 15px; }
+  .case-bullets li { font-size: 16px; }
 }
