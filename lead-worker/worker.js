@@ -91,8 +91,19 @@ export default {
 
     // Хотя бы карточка Trello должна создаться — иначе заявка потеряна
     if (!trelloOk) {
+      const info =
+        trelloRes.status === 'fulfilled'
+          ? trelloRes.value
+          : { status: 'exception', body: String(trelloRes.reason) };
       return json(
-        { ok: false, trello: trelloOk, telegram: tgOk, error: 'Trello failed' },
+        {
+          ok: false,
+          trello: trelloOk,
+          telegram: tgOk,
+          error: 'Trello failed',
+          trelloStatus: info.status,
+          trelloBody: info.body,
+        },
         502,
         cors
       );
@@ -110,7 +121,13 @@ async function sendToTrello(env, name, desc) {
   url.searchParams.set('desc', desc);
   url.searchParams.set('pos', 'top');
   const res = await fetch(url, { method: 'POST' });
-  return { ok: res.ok, status: res.status };
+  let body = '';
+  if (!res.ok) {
+    try {
+      body = (await res.text()).slice(0, 300);
+    } catch {}
+  }
+  return { ok: res.ok, status: res.status, body };
 }
 
 async function sendToTelegram(env, text) {
