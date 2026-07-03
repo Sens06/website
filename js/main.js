@@ -71,6 +71,9 @@
   /* ── Плавная прокрутка по якорям ── */
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener('click', function (e) {
+      /* pop-up кнопки не скроллят к якорю — их обрабатывает форма */
+      if (link.hasAttribute('data-popup')) return;
+
       const targetId = link.getAttribute('href');
       if (!targetId || targetId === '#') return;
 
@@ -89,45 +92,63 @@
     });
   });
 
-  /* ── Форма заявки: способ связи + валидация формата ──
-     Этап 5: реальная отправка (Telegram-бот) и проверка существования контакта
-     (TG/VK login, валидный телефон) — это требует сервера/бота, на статике невозможно. */
-  const form = document.getElementById('contact-form');
-  if (form) {
-    const nameInput = document.getElementById('field-name');
-    const methodSel = document.getElementById('field-method');
-    const contactInput = document.getElementById('field-contact');
-    const contactLabel = document.getElementById('label-contact');
-    const consent = document.getElementById('field-consent');
+  /* ── Формы заявки: инлайн + pop-up, пометка источника (form_source) + UTM ──
+     Реальная отправка в Telegram-бот / CRM — этап интеграций. Сейчас собираем
+     payload (поля + form_source + UTM + URL страницы) и показываем подтверждение. */
+  const METHODS = {
+    telegram: {
+      label: 'Telegram',
+      placeholder: '@username',
+      prefix: '@',
+      pattern: /^@?[a-zA-Z0-9_]{5,32}$/,
+      error: 'Ник в формате @username (5–32 символа: латиница, цифры, _).'
+    },
+    phone: {
+      label: 'Телефон',
+      placeholder: '+7 900 000-00-00',
+      prefix: '',
+      pattern: /^(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/,
+      error: 'Номер в формате +7 900 000-00-00.'
+    },
+    vk: {
+      label: 'VK',
+      placeholder: 'vk.com/username',
+      prefix: 'vk.com/',
+      pattern: /^(https?:\/\/)?(www\.)?vk\.com\/[a-zA-Z0-9_.]{2,}$|^[a-zA-Z0-9_.]{2,}$/,
+      error: 'Ссылка vk.com/... или логин профиля.'
+    }
+  };
 
-    const METHODS = {
-      telegram: {
-        label: 'Telegram',
-        placeholder: '@username',
-        pattern: /^@?[a-zA-Z0-9_]{5,32}$/,
-        error: 'Ник в формате @username (5–32 символа: латиница, цифры, _).'
-      },
-      phone: {
-        label: 'Телефон',
-        placeholder: '+7 900 000-00-00',
-        pattern: /^(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/,
-        error: 'Номер в формате +7 900 000-00-00.'
-      },
-      vk: {
-        label: 'VK',
-        placeholder: 'vk.com/username',
-        pattern: /^(https?:\/\/)?(www\.)?vk\.com\/[a-zA-Z0-9_.]{2,}$|^[a-zA-Z0-9_.]{2,}$/,
-        error: 'Ссылка vk.com/... или логин профиля.'
-      }
-    };
+  function getUTM() {
+    const p = new URLSearchParams(location.search);
+    const out = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) {
+      const v = p.get(k);
+      if (v) out[k] = v;
+    });
+    return out;
+  }
+
+  /* Страница «Спасибо» (для цели в Метрике) — путь зависит от уровня страницы */
+  const thankYouHref = /\/cases\//.test(location.pathname) ? '../spasibo.html' : 'spasibo.html';
+
+  function initContactForm(form, getSource, onAfterReset) {
+    const methodSel = form.querySelector('[name="method"]');
+    const contactInput = form.querySelector('[name="contact"]');
+    const nameInput = form.querySelector('[name="name"]');
+    const consent = form.querySelector('[name="consent"]');
+    const contactField = contactInput.closest('.form-field');
+    const contactLabel = contactField ? contactField.querySelector('label') : null;
 
     function setError(field, msg) {
-      const el = document.getElementById('error-' + field);
+      const el = form.querySelector('.field-error[data-for="' + field + '"]') || document.getElementById('error-' + field);
       if (el) el.textContent = msg || '';
     }
-
-    function currentMethod() {
-      return METHODS[methodSel.value];
+    function currentMethod() { return METHODS[methodSel.value]; }
+    function resetContact() {
+      contactInput.disabled = true;
+      contactInput.placeholder = 'Сначала выберите способ связи';
+      if (contactLabel) contactLabel.textContent = 'Контакт';
     }
 
     methodSel.addEventListener('change', function () {
@@ -135,12 +156,16 @@
       if (m) {
         contactInput.disabled = false;
         contactInput.placeholder = m.placeholder;
-        contactLabel.textContent = 'Контакт (' + m.label + ')';
+        if (contactLabel) contactLabel.textContent = 'Контакт (' + m.label + ')';
+        contactInput.value = m.prefix || '';
+        try {
+          contactInput.focus();
+          const len = contactInput.value.length;
+          contactInput.setSelectionRange(len, len);
+        } catch (e) {}
       } else {
-        contactInput.disabled = true;
         contactInput.value = '';
-        contactInput.placeholder = 'Сначала выберите способ связи';
-        contactLabel.textContent = 'Контакт';
+        resetContact();
       }
       setError('method', '');
       setError('contact', '');
@@ -161,37 +186,125 @@
       return ok;
     }
 
+    function val(name) {
+      const el = form.querySelector('[name="' + name + '"]');
+      return el ? el.value.trim() : '';
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!validate()) return;
 
+      const data = {
+        name: val('name'),
+        niche: val('niche'),
+        method: methodSel.value,
+        contact: contactInput.value.trim(),
+        comment: val('comment'),
+        form_source: (getSource && getSource()) || 'unknown',
+        page_url: location.href
+      };
+      const utm = getUTM();
+      for (const k in utm) { data[k] = utm[k]; }
+
       const submitBtn = form.querySelector('.btn-submit');
       const originalText = submitBtn ? submitBtn.textContent : '';
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Отправка...';
-      }
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Отправка...'; }
 
-      /* Заглушка до этапа 5 (реальная отправка в Telegram-бот) */
-      setTimeout(function () {
+      fetch('https://clatz-lead.clatz.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error('bad status ' + res.status);
+        return res.json();
+      })
+      .then(function (result) {
+        if (!result || !result.ok) throw new Error('worker not ok');
+        /* Успех → переадресация на страницу «Спасибо» (там цель в Метрике) */
+        window.location.href = thankYouHref;
+      })
+      .catch(function (err) {
+        if (window.console) console.error('Ошибка отправки заявки:', err);
         if (submitBtn) {
-          submitBtn.textContent = 'Заявка отправлена';
-          submitBtn.style.backgroundColor = '#2a7a4a';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Ошибка, попробуйте ещё раз';
+          submitBtn.style.backgroundColor = '';
         }
-        setTimeout(function () {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-            submitBtn.style.backgroundColor = '';
-          }
-          form.reset();
-          contactInput.disabled = true;
-          contactInput.placeholder = 'Сначала выберите способ связи';
-          contactLabel.textContent = 'Контакт';
-        }, 4000);
-      }, 800);
+      });
     });
   }
+
+  /* Инлайн-форма на главной */
+  const inlineForm = document.getElementById('contact-form');
+  if (inlineForm) initContactForm(inlineForm, function () { return 'main_form'; });
+
+  /* Pop-up форма (на всех страницах) */
+  (function () {
+    const triggers = document.querySelectorAll('[data-popup]');
+    if (!triggers.length) return;
+
+    const privacyHref = /\/cases\//.test(location.pathname) ? '../privacy.html' : 'privacy.html';
+
+    const modal = document.createElement('div');
+    modal.className = 'form-modal';
+    modal.innerHTML =
+      '<div class="form-modal-dialog" role="dialog" aria-modal="true" aria-label="Заявка на экспресс-аудит">' +
+        '<button type="button" class="form-modal-close" aria-label="Закрыть">&times;</button>' +
+        '<h2 class="h-emboss">Получите бесплатный экспресс-аудит</h2>' +
+        '<p class="section-sub form-modal-sub">Разберём вашу рекламу или нишу и покажем точки роста.</p>' +
+        '<form class="contact-form" novalidate>' +
+          '<div class="form-row">' +
+            '<div class="form-field"><label>Имя</label><input type="text" name="name" placeholder="Ваше имя" autocomplete="given-name" required><span class="field-error" data-for="name" role="alert"></span></div>' +
+            '<div class="form-field"><label>Ниша бизнеса</label><input type="text" name="niche" placeholder="Например: строительство, e-commerce"></div>' +
+          '</div>' +
+          '<div class="form-row">' +
+            '<div class="form-field"><label>Удобный способ связи</label><select name="method" required><option value="" selected disabled>Выберите способ</option><option value="telegram">Telegram</option><option value="phone">Телефон</option><option value="vk">VK</option></select><span class="field-error" data-for="method" role="alert"></span></div>' +
+            '<div class="form-field"><label>Контакт</label><input type="text" name="contact" placeholder="Сначала выберите способ связи" disabled required><span class="field-error" data-for="contact" role="alert"></span></div>' +
+          '</div>' +
+          '<div class="form-field form-field--full"><label>Комментарий <span class="field-optional">(необязательно)</span></label><textarea name="comment" rows="4" placeholder="Расскажите о задаче, бюджете или текущей рекламе"></textarea></div>' +
+          '<div class="form-consent"><input type="checkbox" name="consent" required id="pf-consent"><label for="pf-consent">Я даю согласие на обработку персональных данных и принимаю <a href="' + privacyHref + '" target="_blank" rel="noopener noreferrer">политику конфиденциальности</a>.</label></div>' +
+          '<span class="field-error" data-for="consent" role="alert"></span>' +
+          '<button type="submit" class="btn btn-cta btn-submit">Получить экспресс-аудит</button>' +
+        '</form>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    let popupSource = 'popup';
+    let lastFocus = null;
+    const closeBtn = modal.querySelector('.form-modal-close');
+    const popupForm = modal.querySelector('form');
+
+    function closeModal() {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    initContactForm(popupForm, function () { return popupSource; }, closeModal);
+
+    function openModal(source) {
+      popupSource = source || 'popup';
+      lastFocus = document.activeElement;
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      const first = popupForm.querySelector('[name="name"]');
+      if (first) first.focus();
+    }
+
+    triggers.forEach(function (t) {
+      t.addEventListener('click', function (e) {
+        e.preventDefault();
+        openModal(t.getAttribute('data-source') || 'popup');
+      });
+    });
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    });
+  })();
 
   /* ── Активная ссылка навигации при скролле (IntersectionObserver) ── */
   const sections = document.querySelectorAll('section[id], header[id]');

@@ -27,5 +27,6 @@ projects/
 # В публикацию идут только сжатые веб-версии из assets/img/cases/.
 assets/cases/
 
-# Тяжёлый оригинал фото — в публикацию идёт сжатая версия assets/img/sery.jpg
+# Тяжёлые оригиналы — в публикацию идут сжатые версии из assets/img/
 assets/sery.jpeg
+assets/thankyou.jpeg
