@@ -234,13 +234,17 @@
     const n = cards.length;
     let active = 0;
 
+    /* автопрокрутка ставится на паузу на 40 сек после любого действия пользователя */
+    let pauseUntil = 0;
+    function markInteraction() { pauseUntil = Date.now() + 40000; }
+
     /* точки-индикаторы */
     const dots = cards.map(function (_, i) {
       const d = document.createElement('button');
       d.type = 'button';
       d.className = 'drum-dot';
       d.setAttribute('aria-label', 'Кейс ' + (i + 1));
-      d.addEventListener('click', function () { go(i); });
+      d.addEventListener('click', function () { markInteraction(); go(i); });
       if (dotsBox) dotsBox.appendChild(d);
       return d;
     });
@@ -271,25 +275,27 @@
     function next() { go(active + 1); }
     function prev() { go(active - 1); }
 
-    if (upBtn) upBtn.addEventListener('click', prev);
-    if (downBtn) downBtn.addEventListener('click', next);
+    if (upBtn) upBtn.addEventListener('click', function () { markInteraction(); prev(); });
+    if (downBtn) downBtn.addEventListener('click', function () { markInteraction(); next(); });
 
     /* клик по карточке: если не активна — вывести в центр, если активна — перейти */
     cards.forEach(function (card, i) {
       card.addEventListener('click', function (e) {
+        markInteraction();
         if (i !== active) { e.preventDefault(); go(i); }
       });
     });
 
     /* стрелки клавиатуры */
     drum.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowUp') { e.preventDefault(); prev(); }
-      else if (e.key === 'ArrowDown') { e.preventDefault(); next(); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); markInteraction(); prev(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); markInteraction(); next(); }
     });
 
-    /* свайп по вертикали (мобайл) */
+    /* свайп / удержание пальцем по вертикали (мобайл) */
     let startY = null;
     track.addEventListener('touchstart', function (e) {
+      markInteraction();
       startY = e.touches[0].clientY;
     }, { passive: true });
     track.addEventListener('touchend', function (e) {
@@ -298,6 +304,14 @@
       if (Math.abs(dy) > 40) { if (dy < 0) next(); else prev(); }
       startY = null;
     });
+
+    /* автопрокрутка раз в 5 сек; замирает на 40 сек после взаимодействия */
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      setInterval(function () {
+        if (!document.hidden && Date.now() >= pauseUntil) next();
+      }, 5000);
+    }
 
     window.addEventListener('resize', render);
     render();
