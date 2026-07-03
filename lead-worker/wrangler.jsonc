@@ -1,0 +1,10 @@
+{
+  // Имя воркера — под ним он появится в Cloudflare и в URL
+  "name": "clatz-lead",
+  // Файл с кодом воркера
+  "main": "worker.js",
+  // Дата совместимости рантайма (фиксирует поведение API Cloudflare)
+  "compatibility_date": "2025-06-01"
+  // Секреты (TRELLO_KEY, TRELLO_TOKEN и т.д.) здесь НЕ хранятся —
+  // они задаются в дашборде Cloudflare: Settings → Variables and Secrets
+}
