@@ -256,14 +256,14 @@
         '<p class="section-sub form-modal-sub">Разберём вашу рекламу или нишу и покажем точки роста.</p>' +
         '<form class="contact-form" novalidate>' +
           '<div class="form-row">' +
-            '<div class="form-field"><label>Имя</label><input type="text" name="name" placeholder="Ваше имя" autocomplete="given-name" required><span class="field-error" data-for="name" role="alert"></span></div>' +
-            '<div class="form-field"><label>Ниша бизнеса</label><input type="text" name="niche" placeholder="Например: строительство, e-commerce"></div>' +
+            '<div class="form-field"><label>Имя</label><input type="text" class="ym-disable-keys" name="name" placeholder="Ваше имя" autocomplete="given-name" required><span class="field-error" data-for="name" role="alert"></span></div>' +
+            '<div class="form-field"><label>Ниша бизнеса</label><input type="text" class="ym-disable-keys" name="niche" placeholder="Например: строительство, e-commerce"></div>' +
           '</div>' +
           '<div class="form-row">' +
             '<div class="form-field"><label>Удобный способ связи</label><select name="method" required><option value="" selected disabled>Выберите способ</option><option value="telegram">Telegram</option><option value="phone">Телефон</option><option value="vk">VK</option></select><span class="field-error" data-for="method" role="alert"></span></div>' +
-            '<div class="form-field"><label>Контакт</label><input type="text" name="contact" placeholder="Сначала выберите способ связи" disabled required><span class="field-error" data-for="contact" role="alert"></span></div>' +
+            '<div class="form-field"><label>Контакт</label><input type="text" class="ym-disable-keys" name="contact" placeholder="Сначала выберите способ связи" disabled required><span class="field-error" data-for="contact" role="alert"></span></div>' +
           '</div>' +
-          '<div class="form-field form-field--full"><label>Комментарий <span class="field-optional">(необязательно)</span></label><textarea name="comment" rows="4" placeholder="Расскажите о задаче, бюджете или текущей рекламе"></textarea></div>' +
+          '<div class="form-field form-field--full"><label>Комментарий <span class="field-optional">(необязательно)</span></label><textarea class="ym-disable-keys" name="comment" rows="4" placeholder="Расскажите о задаче, бюджете или текущей рекламе"></textarea></div>' +
           '<div class="form-consent"><input type="checkbox" name="consent" required id="pf-consent"><label for="pf-consent">Я даю согласие на обработку персональных данных и принимаю <a href="' + privacyHref + '" target="_blank" rel="noopener noreferrer">политику конфиденциальности</a>.</label></div>' +
           '<span class="field-error" data-for="consent" role="alert"></span>' +
           '<button type="submit" class="btn btn-cta btn-submit">Получить экспресс-аудит</button>' +
@@ -472,5 +472,23 @@
       if (e.key === 'Escape' && lb.classList.contains('is-open')) closeLb();
     });
   }
+
+  /* ── Уведомление о cookie (первый визит) ── */
+  (function () {
+    try { if (localStorage.getItem('klac_cookie_ok')) return; } catch (e) {}
+    const privacyHref = /\/cases\//.test(location.pathname) ? '../privacy.html' : 'privacy.html';
+    const bar = document.createElement('div');
+    bar.className = 'cookie-bar';
+    bar.innerHTML =
+      '<p>Мы используем cookie и Яндекс.Метрику, чтобы сайт работал лучше. Продолжая пользоваться сайтом, вы соглашаетесь с <a href="' + privacyHref + '">политикой конфиденциальности</a>.</p>' +
+      '<button type="button" class="btn btn-cta cookie-ok">Понятно</button>';
+    document.body.appendChild(bar);
+    requestAnimationFrame(function () { bar.classList.add('is-show'); });
+    bar.querySelector('.cookie-ok').addEventListener('click', function () {
+      try { localStorage.setItem('klac_cookie_ok', '1'); } catch (e) {}
+      bar.classList.remove('is-show');
+      setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 200);
+    });
+  })();
 
 })();

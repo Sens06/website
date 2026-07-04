@@ -2070,6 +2070,64 @@ h3 {
   color: var(--color-accent);
 }
 
+/* ── Уведомление о cookie ── */
+.cookie-bar {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 220;
+  max-width: 760px;
+  margin: 0 auto;
+  display: none;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+}
+
+.cookie-bar.is-show {
+  display: flex;
+}
+
+.cookie-bar p {
+  flex: 1 1 320px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.cookie-bar a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cookie-bar .cookie-ok {
+  flex-shrink: 0;
+  padding: 10px 24px;
+  font-size: 13px;
+  min-height: 40px;
+}
+
+@media (max-width: 480px) {
+  .cookie-bar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+  .cookie-bar .cookie-ok { width: 100%; }
+}
+
 /* Таблицы метрик */
 .case-table-wrap {
   overflow-x: auto;
