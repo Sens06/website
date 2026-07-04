@@ -1,0 +1,10 @@
+# Служебные файлы — не публиковать на сайт
+.git
+.gitignore
+.assetsignore
+wrangler.jsonc
+README.md
+CLAUDE.md
+docs
+projects
+_guide_src
