@@ -19,7 +19,8 @@
  * заполненному шагу.
  *
  * Cron-триггер раз в 30 минут проверяет незавершённые брифы: если клиент
- * молчит больше 12 часов — бот шлёт одно напоминание.
+ * молчит больше 24 часов — бот шлёт одно напоминание (только в рабочее
+ * время, 10–19 по Москве).
  *
  * Секреты (Settings → Variables and Secrets, НЕ в коде):
  *   BOT_TOKEN       — токен бота от @BotFather
@@ -33,7 +34,10 @@
  */
 
 const PRIVACY_URL = 'https://clatz.ru/privacy.html';
-const REMIND_AFTER_MS = 12 * 60 * 60 * 1000; // 12 часов
+const REMIND_AFTER_MS = 24 * 60 * 60 * 1000; // напоминать после 24 часов тишины
+const MSK_OFFSET_H = 3;   // московское время = UTC+3
+const WORK_START_H = 10;  // напоминания шлём только с 10:00…
+const WORK_END_H = 19;    // …до 19:00 по Москве
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Шаги брифа
@@ -287,8 +291,12 @@ export default {
     return new Response('ok');
   },
 
-  // Cron: напоминание о незавершённом брифе спустя 12 часов тишины
+  // Cron: напоминание о незавершённом брифе спустя 24 часа тишины.
+  // Шлём только в рабочее время (10–19 МСК): если срок истёк ночью,
+  // напоминание уйдёт при первом запуске крона в рабочем окне.
   async scheduled(event, env) {
+    const mskHour = (new Date().getUTCHours() + MSK_OFFSET_H) % 24;
+    if (mskHour < WORK_START_H || mskHour >= WORK_END_H) return;
     let cursor;
     do {
       const page = await env.BRIEF_KV.list({ prefix: 'user:', cursor });
