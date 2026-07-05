@@ -104,14 +104,53 @@ const STEPS = [
       '• кто ваш типичный клиент.',
   },
   {
-    key: 'Ссылки (сайт и соцсети)',
-    label: 'Ссылки',
-    kind: 'text',
+    key: 'Сайт',
+    label: 'Сайт',
+    kind: 'link',
     prompt:
-      '🔗 Пришлите одним сообщением все ссылки:\n' +
-      '• сайт (если есть);\n' +
-      '• все соцсети — ВКонтакте, Telegram, Instagram*, YouTube, Дзен и т.д.\n\n' +
-      'Если чего-то нет — так и напишите, например «сайта нет».',
+      '🌐 Пришлите ссылку на ваш <b>сайт</b>.\n' +
+      'Если сайта нет — нажмите кнопку ниже.',
+  },
+  {
+    key: 'ВКонтакте',
+    label: 'ВКонтакте',
+    kind: 'link',
+    prompt:
+      '🔵 Пришлите ссылку на вашу страницу или сообщество <b>ВКонтакте</b>.\n' +
+      'Если не ведёте — нажмите кнопку ниже.',
+  },
+  {
+    key: 'Telegram',
+    label: 'Telegram',
+    kind: 'link',
+    prompt:
+      '✈️ Пришлите ссылку на ваш <b>Telegram-канал</b> (или чат).\n' +
+      'Если не ведёте — нажмите кнопку ниже.',
+  },
+  {
+    key: 'YouTube',
+    label: 'YouTube',
+    kind: 'link',
+    prompt:
+      '▶️ Пришлите ссылку на ваш <b>YouTube-канал</b>.\n' +
+      'Если не ведёте — нажмите кнопку ниже.',
+  },
+  {
+    key: 'Дзен',
+    label: 'Дзен',
+    kind: 'link',
+    prompt:
+      '📰 Пришлите ссылку на ваш канал в <b>Дзене</b>.\n' +
+      'Если не ведёте — нажмите кнопку ниже.',
+  },
+  {
+    key: 'Instagram*',
+    label: 'Instagram*',
+    kind: 'link',
+    prompt:
+      '📸 Пришлите ссылку на ваш <b>Instagram*</b>.\n' +
+      'Если не ведёте — нажмите кнопку ниже.\n\n' +
+      '<i>* Instagram принадлежит Meta, признанной экстремистской организацией и запрещённой в РФ.</i>',
   },
   {
     key: 'Опыт в нише',
@@ -457,8 +496,10 @@ async function onCallback(env, cq) {
   }
 
   if (data === 'ch:no') {
-    if (state.step >= STEPS.length || STEPS[state.step].kind !== 'channel') return;
-    state.answers[STEPS[state.step].key] = 'Не использовали';
+    if (state.step >= STEPS.length) return;
+    const step = STEPS[state.step];
+    if (step.kind !== 'channel' && step.kind !== 'link') return;
+    state.answers[step.key] = step.kind === 'channel' ? 'Не использовали' : 'Не использую';
     return advance(env, state);
   }
 
@@ -526,6 +567,9 @@ async function askStep(env, state, editing = false) {
   if (step.kind === 'files') kb = filesKeyboard();
   if (step.kind === 'channel') {
     kb = { inline_keyboard: [[{ text: '➖ Не использовали', callback_data: 'ch:no' }]] };
+  }
+  if (step.kind === 'link') {
+    kb = { inline_keyboard: [[{ text: '➖ Не использую', callback_data: 'ch:no' }]] };
   }
   if (step.kind === 'share') {
     kb = { inline_keyboard: [
