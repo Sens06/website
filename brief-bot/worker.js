@@ -47,7 +47,7 @@ const CHANNELS = [
   'SEO-продвижение',
   'Авито / маркетплейсы',
   'Офлайн-реклама (наружка, радио, печать)',
-  'Другие каналы (двухгис, купонаторы и т.п.)',
+  'Другие каналы (Яндекс Карты, Дубль гис, купонаторы и т.п.)',
 ];
 
 function channelStep(title) {
@@ -173,19 +173,10 @@ const STEPS = [
       '• почему, на ваш взгляд, не сработало.',
   },
   {
-    key: 'Логотипы и фирменный стиль',
-    label: 'Логотипы',
-    kind: 'files',
-    prompt:
-      '🖼 Загрузите ваши логотипы и, если есть, брендбук / фирменный стиль.\n\n' +
-      'Можно отправить несколько картинок или файлов подряд, либо прислать ' +
-      'ссылку на диск. Когда закончите — нажмите «Готово». ' +
-      'Если логотипов нет — нажмите «Пропустить».',
-  },
-  {
     key: 'Конкуренты',
     label: 'Конкуренты',
     kind: 'text',
+    skippable: true,
     prompt:
       '⚔️ Назовите основных конкурентов, на которых вы ориентируетесь:\n' +
       '• названия компаний;\n' +
@@ -203,21 +194,19 @@ const STEPS = [
       '• кто снимает фото/видео.',
   },
   {
-    key: 'Контент: форматы и частота',
-    label: 'Контент: форматы',
-    kind: 'text',
+    key: 'Видео-отзывы и контент-план',
+    label: 'Видео и контент-план',
+    kind: 'choice',
     prompt:
-      '🗓 Как часто выходит контент и в каких форматах ' +
-      '(посты, сторис, Reels/клипы, статьи, видео)?\n' +
-      'Какие форматы у вашей аудитории заходят лучше всего?',
-  },
-  {
-    key: 'Контент: план и пожелания',
-    label: 'Контент: пожелания',
-    kind: 'text',
-    prompt:
-      '💡 Есть ли контент-план, рубрики, tone of voice?\n' +
-      'Что хотите улучшить или изменить в контенте?',
+      '🎬 Вы снимаете видео-отзывы? Ведёте контент-план?\n\n' +
+      'Выберите вариант ниже или напишите свой ответ.',
+    options: [
+      'Снимаю и веду',
+      'Да, снимаю; контент-план не веду',
+      'Веду контент-план; видео не снимаю',
+      'Пишу тексты, веду хаотично',
+      'Не снимаю и не веду',
+    ],
   },
   ...CHANNELS.map(channelStep),
   {
@@ -503,6 +492,21 @@ async function onCallback(env, cq) {
     return advance(env, state);
   }
 
+  if (data === 'skip') {
+    if (state.step >= STEPS.length || !STEPS[state.step].skippable) return;
+    state.answers[STEPS[state.step].key] = 'Пропущено';
+    return advance(env, state);
+  }
+
+  if (data.startsWith('opt:')) {
+    if (state.step >= STEPS.length) return;
+    const step = STEPS[state.step];
+    const i = parseInt(data.slice(4), 10);
+    if (step.kind !== 'choice' || !step.options || !step.options[i]) return;
+    state.answers[step.key] = step.options[i];
+    return advance(env, state);
+  }
+
   if (data.startsWith('share:')) {
     if (state.step >= STEPS.length || STEPS[state.step].kind !== 'share') return;
     const map = { yes: 'Да, готов(а)', no: 'Нет', talk: 'Обсудим отдельно' };
@@ -570,6 +574,13 @@ async function askStep(env, state, editing = false) {
   }
   if (step.kind === 'link') {
     kb = { inline_keyboard: [[{ text: '➖ Не использую', callback_data: 'ch:no' }]] };
+  }
+  if (step.kind === 'choice' && step.options) {
+    kb = { inline_keyboard: step.options.map((o, i) => [{ text: o, callback_data: 'opt:' + i }]) };
+  }
+  if (step.skippable) {
+    kb = kb || { inline_keyboard: [] };
+    kb.inline_keyboard.push([{ text: '⏭ Пропустить', callback_data: 'skip' }]);
   }
   if (step.kind === 'share') {
     kb = { inline_keyboard: [
@@ -804,9 +815,11 @@ async function sendBriefEmail(env, state) {
   const name = state.answers['Имя'] || state.tg_name || '';
   const bodyText =
     `Заполнен новый бриф: ${company}${name ? ` — ${name}` : ''}.\n\n` +
-    `Полный бриф — во вложении (Excel-файл).\n` +
-    `Логотипы во вложении: ${logoFiles.length}` +
-    (skipped.length ? `; ещё ${skipped.length} (слишком большие) — в Telegram-чате.` : '.');
+    `Полный бриф — во вложении (Excel-файл).` +
+    (logoFiles.length || skipped.length
+      ? `\nЛоготипы во вложении: ${logoFiles.length}` +
+        (skipped.length ? `; ещё ${skipped.length} (слишком большие) — в Telegram-чате.` : '.')
+      : '');
 
   const raw = buildMime({
     from: env.EMAIL_FROM,
@@ -846,7 +859,7 @@ export function buildBriefXlsx(state, logoFiles, skipped) {
     ['Telegram', `${state.username ? '@' + state.username : '—'} (id ${state.chat_id}${state.tg_name ? ', ' + state.tg_name : ''})`],
     ['Согласие на обработку ПДн', state.consent_at || '—'],
     ['Бриф заполнен', new Date().toISOString()],
-    ['Логотипы', logosLine],
+    ...(state.logos.length ? [['Логотипы', logosLine]] : []),
     ['', ''],
     ['Вопрос', 'Ответ', true],
     ...STEPS.map((step) => [step.key, state.answers[step.key] || '—']),
