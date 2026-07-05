@@ -1,7 +1,7 @@
 {
   // Cloudflare Worker, который раздаёт статический сайт (assets-only, без серверного кода).
   // Форма отправляется в отдельный воркер clatz-lead — этот только отдаёт файлы сайта.
-  "name": "clatz",
+  "name": "clatz-brief-bot",
   "compatibility_date": "2026-07-04",
   "assets": {
     "directory": "./"
