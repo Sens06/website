@@ -7,7 +7,11 @@
  * логотипы → конкуренты → контент → рекламные каналы и бюджеты →
  * вопрос про публикацию исследования → подтверждение.
  *
- * Готовый бриф прилетает в чат менеджера (ADMIN_CHAT_ID) вместе с логотипами.
+ * Когда бриф заполнен: в чат менеджера (ADMIN_CHAT_ID) приходит короткое
+ * уведомление «бриф заполнен», а сами данные отправляются письмом на почту —
+ * HTML-документ с брифом + загруженные логотипы во вложении. Почта уходит
+ * через нативный Cloudflare Email Routing (binding BRIEF_EMAIL). Если письмо
+ * отправить не удалось, бриф целиком дублируется в Telegram-чат (фолбэк).
  *
  * Состояние каждого клиента хранится в Cloudflare KV, поэтому клиент может
  * закрыть бота и вернуться позже — бот продолжит с того же шага. Команда
@@ -19,10 +23,13 @@
  *
  * Секреты (Settings → Variables and Secrets, НЕ в коде):
  *   BOT_TOKEN       — токен бота от @BotFather
- *   ADMIN_CHAT_ID   — id чата, куда слать готовые брифы
+ *   ADMIN_CHAT_ID   — id чата, куда слать уведомления «бриф заполнен»
  *   WEBHOOK_SECRET  — произвольная строка; та же передаётся в setWebhook
+ *   EMAIL_FROM      — адрес отправителя на домене зоны (напр. brief@clatz.ru)
+ *   EMAIL_TO        — куда слать брифы (verified-адрес в Email Routing)
  * Привязки (wrangler.jsonc):
  *   BRIEF_KV        — KV namespace для состояний
+ *   BRIEF_EMAIL     — send_email binding (Cloudflare Email Routing)
  */
 
 const PRIVACY_URL = 'https://clatz.ru/privacy.html';
@@ -544,6 +551,7 @@ function extractAnswer(step, msg) {
         type: 'document',
         file_id: msg.document.file_id,
         name: msg.document.file_name || '',
+        mime: msg.document.mime_type || '',
       } };
     }
     return text ? { text } : null;
@@ -617,9 +625,43 @@ async function showSummary(env, chatId, state) {
 }
 
 async function submitBrief(env, state) {
-  // Бриф — менеджеру
-  await sendLong(env, env.ADMIN_CHAT_ID, buildSummary(state, true));
-  for (const f of state.logos) {
+  // Данные брифа — документом на почту
+  let skipped = state.logos;
+  let emailError = null;
+  try {
+    skipped = await sendBriefEmail(env, state);
+  } catch (e) {
+    emailError = (e && e.message) || String(e);
+    console.error('email failed', e);
+  }
+
+  // В Telegram-чат — только уведомление
+  const who = [
+    state.username ? '@' + state.username : `id ${state.chat_id}`,
+    state.answers['Имя'] || state.tg_name,
+    state.answers['Компания'] ? `(${state.answers['Компания']})` : '',
+  ].filter(Boolean).join(', ');
+
+  if (!emailError) {
+    await tg(env, 'sendMessage', {
+      chat_id: env.ADMIN_CHAT_ID,
+      text: `✅ Бриф заполнен от пользователя ${esc(who)}.\nДокумент отправлен на почту.`,
+      parse_mode: 'HTML',
+    }).catch((e) => console.error('notify failed', e));
+  } else {
+    // Фолбэк: письмо не ушло — дублируем бриф в чат, чтобы данные не потерялись
+    await tg(env, 'sendMessage', {
+      chat_id: env.ADMIN_CHAT_ID,
+      text: `⚠️ Бриф заполнен от пользователя ${esc(who)}, но письмо отправить не удалось ` +
+            `(${esc(emailError)}). Данные брифа — ниже.`,
+      parse_mode: 'HTML',
+    }).catch(() => {});
+    await sendLong(env, env.ADMIN_CHAT_ID, buildSummary(state, true))
+      .catch((e) => console.error('fallback summary failed', e));
+  }
+
+  // Логотипы, не попавшие в письмо (или все — при фолбэке), шлём в чат
+  for (const f of skipped) {
     const method = f.type === 'photo' ? 'sendPhoto' : 'sendDocument';
     const params = { chat_id: env.ADMIN_CHAT_ID };
     params[f.type === 'photo' ? 'photo' : 'document'] = f.file_id;
@@ -635,6 +677,180 @@ async function submitBrief(env, state) {
     'Мы внимательно изучим ответы, проведём исследование вашей ниши ' +
     'и вернёмся со стратегией. Менеджер свяжется с вами в ближайшее время.\n\n' +
     'Хорошего дня! 🚀');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Почта: бриф — HTML-документом во вложении (Cloudflare Email Routing)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const MAX_ATTACH_ONE = 10 * 1024 * 1024;   // один файл — до 10 МБ
+const MAX_ATTACH_TOTAL = 18 * 1024 * 1024; // все вложения — до 18 МБ
+
+// Отправляет письмо с брифом; возвращает логотипы, не влезшие в письмо
+async function sendBriefEmail(env, state) {
+  if (!env.BRIEF_EMAIL || !env.EMAIL_FROM || !env.EMAIL_TO) {
+    throw new Error('почта не настроена: нужны BRIEF_EMAIL, EMAIL_FROM, EMAIL_TO');
+  }
+
+  // Скачиваем логотипы из Telegram, чтобы вложить их в письмо
+  const logoFiles = [];
+  const skipped = [];
+  let total = 0;
+  for (const f of state.logos) {
+    try {
+      const info = await tg(env, 'getFile', { file_id: f.file_id });
+      const size = info.file_size || 0;
+      if (!info.file_path || size > MAX_ATTACH_ONE || total + size > MAX_ATTACH_TOTAL) {
+        skipped.push(f);
+        continue;
+      }
+      const res = await fetch(`https://api.telegram.org/file/bot${env.BOT_TOKEN}/${info.file_path}`);
+      if (!res.ok) { skipped.push(f); continue; }
+      const bytes = new Uint8Array(await res.arrayBuffer());
+      total += bytes.length;
+      const ext = (info.file_path.split('.').pop() || 'bin').toLowerCase();
+      const safeName = f.name && /^[\x20-\x7e]+$/.test(f.name)
+        ? f.name.replace(/"/g, '') : `logo-${logoFiles.length + 1}.${ext}`;
+      logoFiles.push({
+        name: safeName,
+        mime: f.mime || (f.type === 'photo' ? 'image/jpeg' : 'application/octet-stream'),
+        bytes,
+      });
+    } catch (e) {
+      console.error('logo download failed', e);
+      skipped.push(f);
+    }
+  }
+
+  const date = new Date().toISOString().slice(0, 10);
+  const company = state.answers['Компания'] || 'компания не указана';
+  const name = state.answers['Имя'] || state.tg_name || '';
+  const bodyText =
+    `Заполнен новый бриф: ${company}${name ? ` — ${name}` : ''}.\n\n` +
+    `Полный бриф — во вложении (HTML-документ, открывается в браузере).\n` +
+    `Логотипы во вложении: ${logoFiles.length}` +
+    (skipped.length ? `; ещё ${skipped.length} (слишком большие) — в Telegram-чате.` : '.');
+
+  const raw = buildMime({
+    from: env.EMAIL_FROM,
+    to: env.EMAIL_TO,
+    subject: `Новый бриф К.Л.А.Ц: ${company}${name ? ` (${name})` : ''}`,
+    text: bodyText,
+    attachments: [
+      {
+        name: `brief-${state.chat_id}-${date}.html`,
+        mime: 'text/html; charset=utf-8',
+        bytes: new TextEncoder().encode(buildBriefHtml(state, logoFiles, skipped)),
+      },
+      ...logoFiles,
+    ],
+  });
+
+  // cloudflare:email есть только в рантайме воркера; в локальных тестах — заглушка
+  let EmailMessage = null;
+  try { ({ EmailMessage } = await import('cloudflare:email')); } catch {}
+  const message = EmailMessage
+    ? new EmailMessage(env.EMAIL_FROM, env.EMAIL_TO, raw)
+    : { from: env.EMAIL_FROM, to: env.EMAIL_TO, raw };
+  await env.BRIEF_EMAIL.send(message);
+  return skipped;
+}
+
+// HTML-документ брифа: открывается в браузере, печатается в PDF
+function buildBriefHtml(state, logoFiles, skipped) {
+  const rows = STEPS.map((step) =>
+    `<section><h3>${esc(step.key)}</h3><p>${esc(state.answers[step.key] || '—').replace(/\n/g, '<br>')}</p></section>`
+  ).join('\n');
+  const logosLine = state.logos.length
+    ? `Во вложении письма: ${logoFiles.length}` +
+      (skipped.length ? `; в Telegram-чате (крупные файлы): ${skipped.length}` : '')
+    : 'не загружались';
+  return `<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бриф К.Л.А.Ц — ${esc(state.answers['Компания'] || '')}</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+         max-width: 720px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; line-height: 1.5; }
+  header { border-bottom: 2px solid #1a1a1a; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+  h1 { margin: 0 0 .5rem; font-size: 1.5rem; }
+  .meta { color: #555; font-size: .9rem; }
+  section { margin-bottom: 1.25rem; page-break-inside: avoid; }
+  h3 { margin: 0 0 .25rem; font-size: 1rem; }
+  p { margin: 0; white-space: pre-wrap; }
+</style>
+<body>
+<header>
+  <h1>Бриф клиента — К.Л.А.Ц</h1>
+  <div class="meta">
+    Telegram: ${esc(state.username ? '@' + state.username : '—')} (id ${state.chat_id}, ${esc(state.tg_name || '')})<br>
+    Согласие на обработку ПДн: ${esc(state.consent_at || '—')}<br>
+    Бриф заполнен: ${esc(new Date().toISOString())}<br>
+    Логотипы: ${logosLine}
+  </div>
+</header>
+${rows}
+</body>
+</html>`;
+}
+
+// Сборка сырого MIME-письма (multipart/mixed, всё в base64)
+function buildMime({ from, to, subject, text, attachments }) {
+  const boundary = '----=_brief_' + Math.random().toString(36).slice(2);
+  const domain = from.split('@')[1] || 'localhost';
+  const lines = [
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: ${encodeSubject(subject)}`,
+    `Date: ${new Date().toUTCString()}`,
+    `Message-ID: <${crypto.randomUUID()}@${domain}>`,
+    'MIME-Version: 1.0',
+    `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/plain; charset=utf-8',
+    'Content-Transfer-Encoding: base64',
+    '',
+    wrap76(b64(new TextEncoder().encode(text))),
+  ];
+  for (const a of attachments) {
+    lines.push(
+      `--${boundary}`,
+      `Content-Type: ${a.mime}`,
+      `Content-Disposition: attachment; filename="${a.name}"`,
+      'Content-Transfer-Encoding: base64',
+      '',
+      wrap76(b64(a.bytes)),
+    );
+  }
+  lines.push(`--${boundary}--`, '');
+  return lines.join('\r\n');
+}
+
+// Тема с кириллицей: RFC 2047, режем на encoded-words по ~40 байт
+function encodeSubject(s) {
+  const enc = new TextEncoder();
+  const words = [];
+  let chunk = '';
+  for (const ch of s) {
+    if (enc.encode(chunk + ch).length > 40) { words.push(chunk); chunk = ch; }
+    else chunk += ch;
+  }
+  if (chunk) words.push(chunk);
+  return words.map((w) => `=?UTF-8?B?${b64(enc.encode(w))}?=`).join('\r\n ');
+}
+
+function b64(bytes) {
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(bin);
+}
+
+function wrap76(s) {
+  return s.replace(/(.{76})/g, '$1\r\n');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

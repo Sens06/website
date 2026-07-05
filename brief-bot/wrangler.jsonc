@@ -13,12 +13,22 @@
     }
   ],
 
+  // Отправка брифа письмом через Cloudflare Email Routing.
+  // Требует: домен в зоне Cloudflare, включённый Email Routing
+  // и подтверждённый адрес получателя (EMAIL_TO).
+  "send_email": [
+    {
+      "name": "BRIEF_EMAIL"
+    }
+  ],
+
   // Cron: каждые 30 минут проверяем незавершённые брифы
   // и шлём напоминание тем, кто молчит больше 12 часов
   "triggers": {
     "crons": ["*/30 * * * *"]
   }
 
-  // Секреты (BOT_TOKEN, ADMIN_CHAT_ID, WEBHOOK_SECRET) здесь НЕ хранятся —
-  // задаются через `wrangler secret put ...` или в дашборде Cloudflare.
+  // Секреты (BOT_TOKEN, ADMIN_CHAT_ID, WEBHOOK_SECRET, EMAIL_FROM, EMAIL_TO)
+  // здесь НЕ хранятся — задаются через `wrangler secret put ...`
+  // или в дашборде Cloudflare.
 }
