@@ -9,7 +9,7 @@
  *
  * Когда бриф заполнен: в чат менеджера (ADMIN_CHAT_ID) приходит короткое
  * уведомление «бриф заполнен», а сами данные отправляются письмом на почту —
- * HTML-документ с брифом + загруженные логотипы во вложении. Почта уходит
+ * Excel-файл с брифом + загруженные логотипы во вложении. Почта уходит
  * через нативный Cloudflare Email Routing (binding BRIEF_EMAIL). Если письмо
  * отправить не удалось, бриф целиком дублируется в Telegram-чат (фолбэк).
  *
@@ -713,7 +713,7 @@ async function submitBrief(env, state) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Почта: бриф — HTML-документом во вложении (Cloudflare Email Routing)
+// Почта: бриф — Excel-файлом во вложении (Cloudflare Email Routing)
 // ─────────────────────────────────────────────────────────────────────────────
 
 const MAX_ATTACH_ONE = 10 * 1024 * 1024;   // один файл — до 10 МБ
@@ -760,7 +760,7 @@ async function sendBriefEmail(env, state) {
   const name = state.answers['Имя'] || state.tg_name || '';
   const bodyText =
     `Заполнен новый бриф: ${company}${name ? ` — ${name}` : ''}.\n\n` +
-    `Полный бриф — во вложении (HTML-документ, открывается в браузере).\n` +
+    `Полный бриф — во вложении (Excel-файл).\n` +
     `Логотипы во вложении: ${logoFiles.length}` +
     (skipped.length ? `; ещё ${skipped.length} (слишком большие) — в Telegram-чате.` : '.');
 
@@ -771,9 +771,9 @@ async function sendBriefEmail(env, state) {
     text: bodyText,
     attachments: [
       {
-        name: `brief-${state.chat_id}-${date}.html`,
-        mime: 'text/html; charset=utf-8',
-        bytes: new TextEncoder().encode(buildBriefHtml(state, logoFiles, skipped)),
+        name: `brief-${state.chat_id}-${date}.xlsx`,
+        mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        bytes: buildBriefXlsx(state, logoFiles, skipped),
       },
       ...logoFiles,
     ],
@@ -789,43 +789,155 @@ async function sendBriefEmail(env, state) {
   return skipped;
 }
 
-// HTML-документ брифа: открывается в браузере, печатается в PDF
-function buildBriefHtml(state, logoFiles, skipped) {
-  const rows = STEPS.map((step) =>
-    `<section><h3>${esc(step.key)}</h3><p>${esc(state.answers[step.key] || '—').replace(/\n/g, '<br>')}</p></section>`
-  ).join('\n');
+// Excel-документ брифа: лист «Бриф», колонки «Вопрос | Ответ».
+// Настоящий .xlsx (OOXML) без библиотек: ZIP без сжатия + минимальная разметка.
+export function buildBriefXlsx(state, logoFiles, skipped) {
   const logosLine = state.logos.length
     ? `Во вложении письма: ${logoFiles.length}` +
       (skipped.length ? `; в Telegram-чате (крупные файлы): ${skipped.length}` : '')
     : 'не загружались';
-  return `<!doctype html>
-<html lang="ru">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Бриф К.Л.А.Ц — ${esc(state.answers['Компания'] || '')}</title>
-<style>
-  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-         max-width: 720px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; line-height: 1.5; }
-  header { border-bottom: 2px solid #1a1a1a; padding-bottom: 1rem; margin-bottom: 1.5rem; }
-  h1 { margin: 0 0 .5rem; font-size: 1.5rem; }
-  .meta { color: #555; font-size: .9rem; }
-  section { margin-bottom: 1.25rem; page-break-inside: avoid; }
-  h3 { margin: 0 0 .25rem; font-size: 1rem; }
-  p { margin: 0; white-space: pre-wrap; }
-</style>
-<body>
-<header>
-  <h1>Бриф клиента — К.Л.А.Ц</h1>
-  <div class="meta">
-    Telegram: ${esc(state.username ? '@' + state.username : '—')} (id ${state.chat_id}, ${esc(state.tg_name || '')})<br>
-    Согласие на обработку ПДн: ${esc(state.consent_at || '—')}<br>
-    Бриф заполнен: ${esc(new Date().toISOString())}<br>
-    Логотипы: ${logosLine}
-  </div>
-</header>
-${rows}
-</body>
-</html>`;
+
+  const rows = [
+    ['Бриф клиента — К.Л.А.Ц', '', true],
+    ['Telegram', `${state.username ? '@' + state.username : '—'} (id ${state.chat_id}${state.tg_name ? ', ' + state.tg_name : ''})`],
+    ['Согласие на обработку ПДн', state.consent_at || '—'],
+    ['Бриф заполнен', new Date().toISOString()],
+    ['Логотипы', logosLine],
+    ['', ''],
+    ['Вопрос', 'Ответ', true],
+    ...STEPS.map((step) => [step.key, state.answers[step.key] || '—']),
+  ];
+
+  const sheetRows = rows.map((r, i) => {
+    const n = i + 1;
+    const style = r[2] ? 2 : 1; // 2 — жирный, 1 — обычный с переносом строк
+    const cell = (col, v) =>
+      `<c r="${col}${n}" t="inlineStr" s="${style}"><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`;
+    return `<row r="${n}">${cell('A', r[0])}${cell('B', r[1])}</row>`;
+  }).join('');
+
+  const XMLH = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+  const files = [
+    ['[Content_Types].xml', XMLH +
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+      '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+      '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+      '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+      '</Types>'],
+    ['_rels/.rels', XMLH +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+      '</Relationships>'],
+    ['xl/workbook.xml', XMLH +
+      '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" ' +
+      'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
+      '<sheets><sheet name="Бриф" sheetId="1" r:id="rId1"/></sheets></workbook>'],
+    ['xl/_rels/workbook.xml.rels', XMLH +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+      '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+      '</Relationships>'],
+    ['xl/styles.xml', XMLH +
+      '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font>' +
+      '<font><b/><sz val="11"/><name val="Calibri"/></font></fonts>' +
+      '<fills count="2"><fill><patternFill patternType="none"/></fill>' +
+      '<fill><patternFill patternType="gray125"/></fill></fills>' +
+      '<borders count="1"><border/></borders>' +
+      '<cellStyleXfs count="1"><xf/></cellStyleXfs>' +
+      '<cellXfs count="3"><xf/>' +
+      '<xf applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf>' +
+      '<xf fontId="1" applyFont="1" applyAlignment="1"><alignment vertical="top"/></xf>' +
+      '</cellXfs></styleSheet>'],
+    ['xl/worksheets/sheet1.xml', XMLH +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<cols><col min="1" max="1" width="38" customWidth="1"/>' +
+      '<col min="2" max="2" width="90" customWidth="1"/></cols>' +
+      `<sheetData>${sheetRows}</sheetData></worksheet>`],
+  ];
+
+  const enc = new TextEncoder();
+  return zipStore(files.map(([path, xml]) => ({ name: path, bytes: enc.encode(xml) })));
+}
+
+function xmlEsc(s) {
+  return String(s)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ZIP без сжатия (метод store) — достаточно для xlsx
+function zipStore(files) {
+  const enc = new TextEncoder();
+  const chunks = [];
+  const central = [];
+  let offset = 0;
+
+  for (const f of files) {
+    const name = enc.encode(f.name);
+    const crc = crc32(f.bytes);
+    const local = new Uint8Array(30 + name.length);
+    const lv = new DataView(local.buffer);
+    lv.setUint32(0, 0x04034b50, true);  // сигнатура local file header
+    lv.setUint16(4, 20, true);          // версия
+    lv.setUint16(6, 0x0800, true);      // флаг: имена в UTF-8
+    lv.setUint16(8, 0, true);           // метод: store
+    lv.setUint32(16, crc, true);
+    lv.setUint32(20, f.bytes.length, true);
+    lv.setUint32(24, f.bytes.length, true);
+    lv.setUint16(26, name.length, true);
+    local.set(name, 30);
+    chunks.push(local, f.bytes);
+
+    const cd = new Uint8Array(46 + name.length);
+    const cv = new DataView(cd.buffer);
+    cv.setUint32(0, 0x02014b50, true);  // сигнатура central directory
+    cv.setUint16(4, 20, true);
+    cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, f.bytes.length, true);
+    cv.setUint32(24, f.bytes.length, true);
+    cv.setUint16(28, name.length, true);
+    cv.setUint32(42, offset, true);
+    cd.set(name, 46);
+    central.push(cd);
+
+    offset += local.length + f.bytes.length;
+  }
+
+  const cdSize = central.reduce((s, c) => s + c.length, 0);
+  const eocd = new Uint8Array(22);
+  const ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(8, files.length, true);
+  ev.setUint16(10, files.length, true);
+  ev.setUint32(12, cdSize, true);
+  ev.setUint32(16, offset, true);
+
+  const total = offset + cdSize + 22;
+  const out = new Uint8Array(total);
+  let pos = 0;
+  for (const c of [...chunks, ...central, eocd]) { out.set(c, pos); pos += c.length; }
+  return out;
+}
+
+let CRC_TABLE = null;
+function crc32(bytes) {
+  if (!CRC_TABLE) {
+    CRC_TABLE = new Int32Array(256);
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1;
+      CRC_TABLE[n] = c;
+    }
+  }
+  let c = -1;
+  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ -1) >>> 0;
 }
 
 // Сборка сырого MIME-письма (multipart/mixed, всё в base64)
