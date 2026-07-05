@@ -18,9 +18,10 @@
  * /edit (или кнопка «Изменить ответы») позволяет вернуться к любому уже
  * заполненному шагу.
  *
- * Cron-триггер раз в 30 минут проверяет незавершённые брифы: если клиент
- * молчит больше 24 часов — бот шлёт одно напоминание (только в рабочее
- * время, 10–19 по Москве).
+ * Cron-триггер раз в 30 минут проверяет незавершённые брифы и шлёт
+ * напоминания (только в рабочее время, 10:00–20:30 МСК): первое после
+ * 2 часов тишины, второе после 24 часов. Любая активность клиента
+ * сбрасывает счётчик.
  *
  * Секреты (Settings → Variables and Secrets, НЕ в коде):
  *   BOT_TOKEN       — токен бота от @BotFather
@@ -34,10 +35,28 @@
  */
 
 const PRIVACY_URL = 'https://clatz.ru/privacy.html';
-const REMIND_AFTER_MS = 24 * 60 * 60 * 1000; // напоминать после 24 часов тишины
-const MSK_OFFSET_H = 3;   // московское время = UTC+3
-const WORK_START_H = 10;  // напоминания шлём только с 10:00…
-const WORK_END_H = 19;    // …до 19:00 по Москве
+const MSK_OFFSET_MIN = 3 * 60;        // московское время = UTC+3
+const WORK_START_MIN = 10 * 60;       // напоминания шлём только с 10:00…
+const WORK_END_MIN = 20 * 60 + 30;    // …до 20:30 по Москве
+
+// Ступени напоминаний: часы тишины → текст. Сбрасываются при любой активности.
+const REMINDERS = [
+  {
+    afterMs: 2 * 60 * 60 * 1000,
+    text:
+      '👋 Вы начали заполнять бриф — осталось совсем немного!\n\n' +
+      'Все ответы сохранены, можно продолжить с того же места: ' +
+      'просто ответьте на последний вопрос или нажмите /start.',
+  },
+  {
+    afterMs: 24 * 60 * 60 * 1000,
+    text:
+      '👋 Напомним ещё раз: ваш бриф почти заполнен, но не отправлен.\n\n' +
+      'Все ответы на месте — продолжите с того же места, ответив ' +
+      'на последний вопрос, или нажмите /start.\n\n' +
+      'Чем быстрее заполним бриф, тем быстрее подготовим для вас стратегию 🙂',
+  },
+];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Шаги брифа
@@ -295,24 +314,24 @@ export default {
   // Шлём только в рабочее время (10–19 МСК): если срок истёк ночью,
   // напоминание уйдёт при первом запуске крона в рабочем окне.
   async scheduled(event, env) {
-    const mskHour = (new Date().getUTCHours() + MSK_OFFSET_H) % 24;
-    if (mskHour < WORK_START_H || mskHour >= WORK_END_H) return;
+    const d = new Date();
+    const mskMin = (d.getUTCHours() * 60 + d.getUTCMinutes() + MSK_OFFSET_MIN) % 1440;
+    if (mskMin < WORK_START_MIN || mskMin >= WORK_END_MIN) return;
     let cursor;
     do {
       const page = await env.BRIEF_KV.list({ prefix: 'user:', cursor });
       for (const { name } of page.keys) {
         const state = await kvGet(env, name);
-        if (!state || state.completed || state.reminded || state.step === CONSENT) continue;
-        if (Date.now() - (state.last_activity || 0) < REMIND_AFTER_MS) continue;
+        if (!state || state.completed || state.step === CONSENT) continue;
+        // совместимость со старым полем reminded (одно напоминание уже ушло)
+        const level = state.remind_level ?? (state.reminded ? REMINDERS.length : 0);
+        if (level >= REMINDERS.length) continue;
+        if (Date.now() - (state.last_activity || 0) < REMINDERS[level].afterMs) continue;
         await tg(env, 'sendMessage', {
           chat_id: state.chat_id,
-          text:
-            '👋 Похоже, вы начали заполнять бриф, но не закончили.\n\n' +
-            'Все ваши ответы сохранены — можно продолжить с того же места. ' +
-            'Просто ответьте на последний вопрос или нажмите /start.\n\n' +
-            'Чем быстрее заполним бриф, тем быстрее подготовим для вас стратегию 🙂',
+          text: REMINDERS[level].text,
         }).catch(() => {});
-        state.reminded = true;
+        state.remind_level = level + 1;
         await kvPut(env, name, state);
       }
       cursor = page.list_complete ? null : page.cursor;
@@ -1080,7 +1099,7 @@ function newState(chatId, from) {
     logos_note: '',
     consent_at: null,
     completed: false,
-    reminded: false,
+    remind_level: 0,
     last_activity: Date.now(),
   };
 }
@@ -1101,7 +1120,7 @@ async function kvPut(env, key, state) {
 // Любая активность клиента сбрасывает таймер напоминания
 async function touchAndSave(env, state) {
   state.last_activity = Date.now();
-  state.reminded = false;
+  state.remind_level = 0;
   await kvPut(env, `user:${state.chat_id}`, state);
 }
 
