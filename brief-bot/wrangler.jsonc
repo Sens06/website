@@ -1,0 +1,24 @@
+{
+  // Имя воркера — под ним он появится в Cloudflare и в URL
+  "name": "clatz-brief-bot",
+  // Файл с кодом воркера
+  "main": "worker.js",
+  "compatibility_date": "2026-07-04",
+
+  // KV-хранилище состояний брифов (id заполнить после `wrangler kv namespace create BRIEF_KV`)
+  "kv_namespaces": [
+    {
+      "binding": "BRIEF_KV",
+      "id": "ЗАМЕНИ_НА_ID_ИЗ_WRANGLER"
+    }
+  ],
+
+  // Cron: каждые 30 минут проверяем незавершённые брифы
+  // и шлём напоминание тем, кто молчит больше 12 часов
+  "triggers": {
+    "crons": ["*/30 * * * *"]
+  }
+
+  // Секреты (BOT_TOKEN, ADMIN_CHAT_ID, WEBHOOK_SECRET) здесь НЕ хранятся —
+  // задаются через `wrangler secret put ...` или в дашборде Cloudflare.
+}
