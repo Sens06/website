@@ -12,6 +12,20 @@
   const header  = document.querySelector('.site-header');
   const navLinks = nav ? nav.querySelectorAll('a') : [];
 
+  /* ── Цели Яндекс.Метрики ───────────────────────────────────────────────────
+     Сайт отправляет события; сами цели заводятся в интерфейсе Метрики по этим
+     идентификаторам (тип «JS-событие»):
+       form_submit      — успешная отправка заявки
+       phone_click      — клик по номеру телефона
+       messenger_click  — клик в Telegram / WhatsApp
+     Заявка дополнительно ловится целью на URL страницы «Спасибо» (кода не требует). */
+  const METRIKA_ID = 110373071;
+
+  function reachGoal(name) {
+    if (typeof window.ym !== 'function') return;   /* Метрика могла не загрузиться */
+    try { window.ym(METRIKA_ID, 'reachGoal', name); } catch (e) {}
+  }
+
   /* ── Бургер-меню ── */
   function openMenu() {
     burger.classList.add('is-open');
@@ -231,6 +245,7 @@
       })
       .then(function (result) {
         if (!result || !result.ok) throw new Error('worker not ok');
+        reachGoal('form_submit');
         /* Успех → переадресация на страницу «Спасибо» (там цель в Метрике) */
         window.location.href = thankYouHref;
       })
@@ -627,5 +642,19 @@
       setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 200);
     });
   })();
+
+  /* ── Клики по телефону и мессенджерам → цели Метрики ──
+     Делегирование на document: ловит ссылки в шапке, футере, поп-апе и на посадочных. */
+  document.addEventListener('click', function (e) {
+    const link = e.target.closest && e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href') || '';
+    if (href.indexOf('tel:') === 0) {
+      reachGoal('phone_click');
+    } else if (/(^|\/\/)(t\.me|wa\.me|api\.whatsapp\.com)/.test(href) ||
+               /t\.me\/|wa\.me\//.test(href)) {
+      reachGoal('messenger_click');
+    }
+  });
 
 })();
