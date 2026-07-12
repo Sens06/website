@@ -13,17 +13,37 @@
   const navLinks = nav ? nav.querySelectorAll('a') : [];
 
   /* ── Цели Яндекс.Метрики ───────────────────────────────────────────────────
-     Сайт отправляет события; сами цели заводятся в интерфейсе Метрики по этим
-     идентификаторам (тип «JS-событие»):
-       form_submit      — успешная отправка заявки
+     Сайт отправляет события; цели с такими же идентификаторами заведены в кабинете
+     (тип «JS-событие», создаются скриптом yandex-direct/monitor/metrika_goals.py).
+
+     Воронка заявки:
+       form_view        — долистал до формы
+       form_open        — открыл форму в поп-апе
+       form_start       — начал заполнять
+       form_submit      — отправил заявку (успех)
+       lead_lp / lead_case / lead_main — заявка с посадочной / кейса / главной
+
+     Вовлечённость:
+       case_open        — открыл кейс в поп-апе
+       shot_zoom        — увеличил скриншот
        phone_click      — клик по номеру телефона
        messenger_click  — клик в Telegram / WhatsApp
-     Заявка дополнительно ловится целью на URL страницы «Спасибо» (кода не требует). */
+
+     Параметром уходит form_source (какая кнопка) и page_group (тип страницы) —
+     их видно в отчёте по цели. Заявка дополнительно ловится целью на URL «Спасибо». */
   const METRIKA_ID = 110373071;
 
-  function reachGoal(name) {
+  function reachGoal(name, params) {
     if (typeof window.ym !== 'function') return;   /* Метрика могла не загрузиться */
-    try { window.ym(METRIKA_ID, 'reachGoal', name); } catch (e) {}
+    try { window.ym(METRIKA_ID, 'reachGoal', name, params || undefined); } catch (e) {}
+  }
+
+  /* Группа страницы — чтобы отличать заявки с посадочных, кейсов и главной.
+     Метрика не видит form_source (он уходит в воркер), поэтому передаём сами. */
+  function pageGroup() {
+    if (/\/lp\//.test(location.pathname)) return 'lp';
+    if (/\/cases\//.test(location.pathname)) return 'case';
+    return 'main';
   }
 
   /* ── Бургер-меню ── */
@@ -208,6 +228,14 @@
       return el ? el.value.trim() : '';
     }
 
+    /* Начал заполнять форму — считаем один раз, показывает реальный интерес */
+    let started = false;
+    form.addEventListener('input', function () {
+      if (started) return;
+      started = true;
+      reachGoal('form_start', { page_group: pageGroup() });
+    });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!validate()) return;
@@ -245,7 +273,9 @@
       })
       .then(function (result) {
         if (!result || !result.ok) throw new Error('worker not ok');
-        reachGoal('form_submit');
+        const src = data.form_source;
+        reachGoal('form_submit', { form_source: src, page_group: pageGroup() });
+        reachGoal('lead_' + pageGroup(), { form_source: src });
         /* Успех → переадресация на страницу «Спасибо» (там цель в Метрике) */
         window.location.href = thankYouHref;
       })
@@ -314,6 +344,7 @@
 
     function openModal(source) {
       popupSource = source || 'popup';
+      reachGoal('form_open', { form_source: popupSource, page_group: pageGroup() });
       lastFocus = document.activeElement;
       modal.classList.add('is-open');
       document.body.style.overflow = 'hidden';
@@ -484,6 +515,7 @@
     let lastFocus = null;
 
     function openLb(src, alt) {
+      reachGoal('shot_zoom', { page_group: pageGroup() });
       lbImg.src = src;
       lbImg.alt = alt || '';
       lastFocus = document.activeElement;
@@ -585,6 +617,7 @@
         const href = trigger.getAttribute('href');
         if (!href) return;
 
+        reachGoal('case_open', { page_group: pageGroup() });
         lastFocus = document.activeElement;
         modal.classList.add('is-open');
         document.body.style.overflow = 'hidden';
@@ -656,5 +689,23 @@
       reachGoal('messenger_click');
     }
   });
+
+
+  /* ── Долистал до формы заявки ──
+     Верх воронки: сколько людей вообще дошли до формы. Считаем один раз. */
+  (function () {
+    const formSection = document.getElementById('lp-form') || document.getElementById('contact');
+    if (!formSection || !('IntersectionObserver' in window)) return;
+
+    const obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        reachGoal('form_view', { page_group: pageGroup() });
+        obs.disconnect();
+      });
+    }, { threshold: 0.3 });
+
+    obs.observe(formSection);
+  })();
 
 })();
