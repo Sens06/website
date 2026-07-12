@@ -129,8 +129,11 @@
     return out;
   }
 
-  /* Страница «Спасибо» (для цели в Метрике) — путь зависит от уровня страницы */
-  const thankYouHref = /\/cases\//.test(location.pathname) ? '../spasibo.html' : 'spasibo.html';
+  /* Страницы в подпапках (cases/, lp/) лежат на уровень глубже — им нужен ../ */
+  const isSubPage = /\/(cases|lp)\//.test(location.pathname);
+
+  /* Страница «Спасибо» (для цели в Метрике) */
+  const thankYouHref = isSubPage ? '../spasibo.html' : 'spasibo.html';
 
   function initContactForm(form, getSource, onAfterReset) {
     const methodSel = form.querySelector('[name="method"]');
@@ -195,9 +198,15 @@
       e.preventDefault();
       if (!validate()) return;
 
+      /* На посадочных ниша известна заранее, а у пользователя спрашиваем только город.
+         Префикс из data-niche-prefix склеивается с полем, чтобы в CRM пришло
+         «Натяжные потолки, Краснодар», а не просто «Краснодар». */
+      const nichePrefix = form.getAttribute('data-niche-prefix') || '';
+      const nicheValue = (nichePrefix + val('niche')).trim();
+
       const data = {
         name: val('name'),
-        niche: val('niche'),
+        niche: nicheValue,
         method: methodSel.value,
         contact: contactInput.value.trim(),
         comment: val('comment'),
@@ -236,16 +245,20 @@
     });
   }
 
-  /* Инлайн-форма на главной */
+  /* Инлайн-форма (главная, посадочные). Источник — из data-source, иначе main_form */
   const inlineForm = document.getElementById('contact-form');
-  if (inlineForm) initContactForm(inlineForm, function () { return 'main_form'; });
+  if (inlineForm) {
+    initContactForm(inlineForm, function () {
+      return inlineForm.getAttribute('data-source') || 'main_form';
+    });
+  }
 
   /* Pop-up форма (на всех страницах) */
   (function () {
     const triggers = document.querySelectorAll('[data-popup]');
     if (!triggers.length) return;
 
-    const privacyHref = /\/cases\//.test(location.pathname) ? '../privacy.html' : 'privacy.html';
+    const privacyHref = isSubPage ? '../privacy.html' : 'privacy.html';
 
     const modal = document.createElement('div');
     modal.className = 'form-modal';
@@ -293,12 +306,22 @@
       if (first) first.focus();
     }
 
-    triggers.forEach(function (t) {
-      t.addEventListener('click', function (e) {
-        e.preventDefault();
-        openModal(t.getAttribute('data-source') || 'popup');
-      });
+    /* Делегирование: ловим и кнопки, которые появились позже
+       (например, внутри кейса, подгруженного в pop-up). */
+    document.addEventListener('click', function (e) {
+      const t = e.target.closest ? e.target.closest('[data-popup]') : null;
+      if (!t) return;
+      e.preventDefault();
+
+      /* Если кнопка внутри модалки кейса — сначала закрываем кейс */
+      const caseModal = t.closest('.case-modal');
+      if (caseModal) {
+        caseModal.classList.remove('is-open');
+      }
+
+      openModal(t.getAttribute('data-source') || 'popup');
     });
+
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', function (e) {
@@ -430,9 +453,12 @@
     render();
   }
 
-  /* ── Лайтбокс для скринов кейсов ── */
-  const figImgs = document.querySelectorAll('.case-figure img');
-  if (figImgs.length) {
+  /* ── Лайтбокс для скринов кейсов и посадочных ──
+     Делегирование на document: подхватывает и картинки, которые появились позже
+     (например, кейс, подгруженный в pop-up). */
+  const SHOT_SELECTOR = '.case-figure img, .lp-shot img';
+
+  if (document.querySelector(SHOT_SELECTOR) || document.querySelector('[data-case-modal]')) {
     const lb = document.createElement('div');
     lb.className = 'lightbox';
     lb.innerHTML = '<button type="button" class="lightbox-close" aria-label="Закрыть">&times;</button><img alt="">';
@@ -453,15 +479,28 @@
 
     function closeLb() {
       lb.classList.remove('is-open');
-      document.body.style.overflow = '';
+      /* Прокрутку страницы возвращаем, только если под лайтбоксом нет открытой модалки */
+      if (!document.querySelector('.form-modal.is-open, .case-modal.is-open')) {
+        document.body.style.overflow = '';
+      }
       lbImg.removeAttribute('src');
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     }
 
-    figImgs.forEach(function (img) {
-      img.addEventListener('click', function () {
-        openLb(img.currentSrc || img.src, img.alt);
-      });
+    document.addEventListener('click', function (e) {
+      const img = e.target.closest ? e.target.closest(SHOT_SELECTOR) : null;
+      if (img) openLb(img.currentSrc || img.src, img.alt);
+    });
+
+    /* То же с клавиатуры: у скринов на посадочных есть tabindex + role="button" */
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const fig = e.target.closest ? e.target.closest('.lp-shot[tabindex]') : null;
+      if (!fig) return;
+      const img = fig.querySelector('img');
+      if (!img) return;
+      e.preventDefault();
+      openLb(img.currentSrc || img.src, img.alt);
     });
 
     lbClose.addEventListener('click', closeLb);
@@ -473,10 +512,108 @@
     });
   }
 
+  /* ── Кейс в pop-up (на посадочных): подтягиваем страницу кейса и показываем её
+        в модалке, не уводя человека с посадочной. ── */
+  (function () {
+    const caseTriggers = document.querySelectorAll('[data-case-modal]');
+    if (!caseTriggers.length) return;
+
+    const modal = document.createElement('div');
+    modal.className = 'case-modal';
+    modal.innerHTML =
+      '<div class="case-modal-dialog" role="dialog" aria-modal="true" aria-label="Кейс">' +
+        '<button type="button" class="case-modal-close" aria-label="Закрыть">&times;</button>' +
+        '<div class="case-modal-content"><p class="case-modal-loading">Загружаем кейс…</p></div>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    const content = modal.querySelector('.case-modal-content');
+    const dialog = modal.querySelector('.case-modal-dialog');
+    const closeBtn = modal.querySelector('.case-modal-close');
+    const cache = {};
+    let lastFocus = null;
+
+    function closeModal() {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    /* Хвост кейса в модалке: кнопка закрывает кейс и открывает форму заявки */
+    const caseEnd =
+      '<div class="case-modal-end">' +
+        '<p>Хочешь такой же поток заявок в своём городе? Разберём твою рекламу и посчитаем прогноз — бесплатно.</p>' +
+        '<a href="#lp-form" class="btn btn-cta" data-popup data-source="lp_potolki_case_modal">Оставить заявку</a>' +
+      '</div>';
+
+    function render(html, withEnd) {
+      content.innerHTML = withEnd ? html + caseEnd : html;
+      dialog.scrollTop = 0;
+    }
+
+    /* Из страницы кейса берём только содержательную часть: обложку, заголовок,
+       теги, факты и статью. Шапка, подвал и кнопки «назад» в модалке не нужны. */
+    function extract(text) {
+      const doc = new DOMParser().parseFromString(text, 'text/html');
+      const page = doc.querySelector('.case-page .container');
+      if (!page) return null;
+
+      page.querySelectorAll('.case-back-top, .case-end').forEach(function (el) {
+        el.remove();
+      });
+      return page.innerHTML;
+    }
+
+    caseTriggers.forEach(function (trigger) {
+      trigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        const href = trigger.getAttribute('href');
+        if (!href) return;
+
+        lastFocus = document.activeElement;
+        modal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+
+        if (cache[href]) {
+          render(cache[href], true);
+          return;
+        }
+
+        render('<p class="case-modal-loading">Загружаем кейс…</p>', false);
+
+        fetch(href)
+          .then(function (res) {
+            if (!res.ok) throw new Error('bad status ' + res.status);
+            return res.text();
+          })
+          .then(function (text) {
+            const html = extract(text);
+            if (!html) throw new Error('case content not found');
+            cache[href] = html;
+            render(html, true);
+          })
+          .catch(function (err) {
+            if (window.console) console.error('Не удалось загрузить кейс:', err);
+            /* Если подгрузить не вышло — просто уводим на страницу кейса */
+            window.location.href = href;
+          });
+      });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function (e) {
+      /* Esc сначала закрывает лайтбокс поверх модалки, потом саму модалку */
+      const lbOpen = document.querySelector('.lightbox.is-open');
+      if (e.key === 'Escape' && !lbOpen && modal.classList.contains('is-open')) closeModal();
+    });
+  })();
+
   /* ── Уведомление о cookie (первый визит) ── */
   (function () {
     try { if (localStorage.getItem('klac_cookie_ok')) return; } catch (e) {}
-    const privacyHref = /\/cases\//.test(location.pathname) ? '../privacy.html' : 'privacy.html';
+    const privacyHref = isSubPage ? '../privacy.html' : 'privacy.html';
     const bar = document.createElement('div');
     bar.className = 'cookie-bar';
     bar.innerHTML =
