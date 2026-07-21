@@ -217,7 +217,6 @@
     initPop();
     initDemo();
     initBurger();
-    initHeaderScroll();
     initAnchors();
   });
 })();
