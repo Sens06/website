@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Чат-боты первичной обработки клиента — приём заявок, квалификация, запись клиентов 24/7</title>
+  <meta name="description" content="Разработка чат-ботов для первичной обработки клиента: приём и обработка заявок, квалификация, запись клиентов, ответы на вопросы круглосуточно. Плюс калькулятор-квиз для сайта. Демо-бот от 15 000 ₽.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/ai-landing.css?v=7">
+  <link rel="canonical" href="https://clatz.ru/bots">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Чат-бот для строительной компании: заявки не теряются, клиент квалифицирован">
+  <meta property="og:description" content="Бот принимает и квалифицирует заявки круглосуточно и передаёт готового клиента менеджеру в CRM. Пилот за 5–7 дней.">
+  <meta property="og:url" content="https://clatz.ru/bots">
+  <meta property="og:image" content="https://clatz.ru/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Service","name":"Разработка чат-бота для приёма и квалификации заявок","serviceType":"Разработка чат-ботов для бизнеса","areaServed":"RU","url":"https://clatz.ru/bots"}
+  </script>
+
+  <!-- Yandex.Metrika -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110373071','ym');
+    ym(110373071,'init',{ssr:true,webvisor:true,clickmap:true,accurateTrackBounce:true,trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/110373071" style="position:absolute;left:-9999px;" alt="" /></div></noscript>
+</head>
+<body>
+
+  <!-- ШАПКА (нейтральная, лого добавить позже) -->
+  <header class="hdr">
+    <div class="container hdr__in">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4M9 13h.01M15 13h.01M8 3.5h8"/></svg>
+        </span>
+        <span>Чат-боты под ключ</span>
+      </div>
+      <nav class="nav" id="nav">
+        <button class="nav__close" id="nav-close" type="button" aria-label="Закрыть меню">×</button>
+        <a href="#features">Что умеет</a>
+        <a href="#calc">Калькулятор</a>
+        <a href="#pricing">Цены</a>
+        <a href="#form">Контакты</a>
+        <a href="tel:+79298301575" class="nav__phone">+7 929 830-15-75</a>
+        <a href="#" class="btn btn--primary nav__cta" data-pop data-source="bots_menu">Обсудить бота</a>
+      </nav>
+      <div class="hdr__actions">
+        <a href="tel:+79298301575" class="hdr__phone">+7 929 830-15-75</a>
+        <a href="#" class="btn btn--primary" data-pop data-source="bots_header">Обсудить бота</a>
+        <button class="burger" id="burger" type="button" aria-label="Меню" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="nav-scrim" id="nav-scrim" hidden></div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <div>
+        <span class="eyebrow">Для строительных и ремонтных компаний</span>
+        <h1>Чат-боты первичной обработки клиента</h1>
+        <p class="lead"><strong>Приём и обработка заявок, квалификация, запись клиентов и ответы на вопросы — 24/7, без менеджера.</strong> Клиент пишет ночью или в выходной — бот отвечает за секунды и передаёт в CRM готового клиента. А калькулятор-квиз на сайте помогает клиенту сразу посчитать примерную цену и оставить заявку.</p>
+        <ul class="ticks">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Заявки не теряются — бот на связи круглосуточно</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Калькулятор-квиз на сайте: клиент сам считает цену и оставляет заявку</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Замерщик едет подготовленным, с набором готовых решений</li>
+        </ul>
+        <div class="hero__actions">
+          <a href="#" class="btn btn--primary" data-pop data-source="bots_hero">Обсудить бота для моей компании</a>
+          <a href="#calc" class="btn btn--ghost">Заказать калькулятор на сайт</a>
+        </div>
+        <p class="hero__note">Первый рабочий бот — за 5–7 дней. Демо-бот — от 15 000 ₽.</p>
+      </div>
+
+      <!-- ДЕМО-СИМУЛЯТОР -->
+      <div id="demo">
+        <div class="demo">
+          <div class="demo__bar"><span class="demo__dot"></span><span class="demo__title">Чат-бот компании · демо</span></div>
+          <div class="demo__body" id="demo-body">
+            <div class="bubble bubble--in">Нажмите «Запустить демо» — покажу, как бот общается с клиентом и собирает заявку 👇</div>
+          </div>
+          <div class="demo__foot"><button class="btn btn--primary" id="demo-run" type="button">▶ Запустить демо</button></div>
+        </div>
+        <p class="fine" style="text-align:center;margin-top:10px">Пример диалога. Бот даёт ориентировочную вилку, точную смету считает менеджер после замера.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЧТО УМЕЕТ БОТ (крупно) -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Что умеет бот</span>
+        <h2>Берёт на себя всю первичную обработку клиента</h2>
+      </div>
+      <div class="caps">
+        <div class="caps__item">Принимает и обрабатывает заявки 24/7</div>
+        <div class="caps__item">Квалифицирует: объём, бюджет, сроки</div>
+        <div class="caps__item">Отвечает на типовые вопросы клиентов</div>
+        <div class="caps__item">Записывает клиентов и на замер</div>
+        <div class="caps__item">Считает вилку стоимости прямо в диалоге</div>
+        <div class="caps__item">Передаёт готовый лид в CRM и Telegram</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- КАЛЬКУЛЯТОР-КВИЗ (интерактивный) -->
+  <section class="section section--alt" id="calc">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Не только бот</span>
+        <h2>Калькулятор-квиз для вашего сайта</h2>
+        <p>Клиент сам отвечает на пару вопросов, видит примерную стоимость и оставляет заявку — вы получаете тёплый лид с параметрами. Попробуйте на живом примере ниже 👇</p>
+      </div>
+      <div class="hero__grid">
+        <div>
+          <ul class="ticks">
+            <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Клиент считает цену сам — не отваливается на «сколько стоит»</li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Вопросы квалифицируют клиента ещё до заявки</li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Заявка приходит с параметрами и оценкой стоимости</li>
+            <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Поднимает конверсию сайта в заявку</li>
+          </ul>
+          <p class="fine">Справа — рабочий пример калькулятора (расчёт натяжного потолка) из нашей реальной разработки. Такой же соберём под ваш продукт и услуги.</p>
+        </div>
+        <div>
+          <div class="calc">
+            <div class="calc__head">Рассчитайте стоимость натяжного потолка</div>
+            <div class="calc__row">
+              <div class="calc__label">Площадь помещения <span class="calc__val" id="c-area-v">40 м²</span></div>
+              <input type="range" id="c-area" min="10" max="120" value="40">
+            </div>
+            <div class="calc__row">
+              <div class="calc__label">Тип полотна</div>
+              <div class="calc__opts" id="c-type">
+                <button type="button" class="calc__opt is-active" data-price="350">Матовое</button>
+                <button type="button" class="calc__opt" data-price="400">Сатин</button>
+                <button type="button" class="calc__opt" data-price="480">Глянец</button>
+              </div>
+            </div>
+            <div class="calc__row">
+              <div class="calc__label">Точечных светильников <span class="calc__val" id="c-lights-v">4</span></div>
+              <input type="range" id="c-lights" min="0" max="20" value="4">
+            </div>
+            <div class="calc__result">
+              <span>Примерная стоимость «под ключ»</span>
+              <div class="calc__price" id="c-price">—</div>
+              <span class="fine">Ориентир, точная цена — после замера</span>
+            </div>
+            <a href="#" class="btn btn--primary btn--block" data-pop data-source="calc_demo">Хочу такой же калькулятор</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- КАК РАБОТАЕТ БОТ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Как это устроено</span>
+        <h2>От первого сообщения клиента до готового лида в вашей CRM</h2>
+      </div>
+      <div class="steps">
+        <div class="card"><span class="card__num">1</span><h3>Встречает 24/7</h3><p>Отвечает за секунды на сайте, в Telegram, WhatsApp или на Авито — в любое время, без выходных.</p></div>
+        <div class="card"><span class="card__num">2</span><h3>Задаёт вопросы</h3><p>Тип объекта, объём работ, сроки, бюджет. Разговаривает по-человечески, а не «нажмите 1».</p></div>
+        <div class="card"><span class="card__num">3</span><h3>Ориентирует по цене</h3><p>Даёт клиенту вилку «от–до», чтобы он не отвалился на «сколько стоит». Точную смету — после замера.</p></div>
+        <div class="card"><span class="card__num">4</span><h3>Отдаёт клиента</h3><p>Лид с параметрами объекта падает менеджеру в Telegram и CRM за секунды, с пометкой источника.</p></div>
+        <div class="card"><span class="card__num">5</span><h3>Дорабатывается</h3><p>Смотрим реальные диалоги и докручиваем сценарии под ваш бизнес — бот становится точнее.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- БОЛИ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Знакомо?</span>
+        <h2>Где обычно теряются клиенты</h2>
+        <p>Так выглядит приём заявок у большинства компаний, к которым мы приходим.</p>
+      </div>
+      <div class="grid grid--4">
+        <div class="card"><h3>Ответили поздно</h3><p>Горячий клиент остывает за 5–15 минут — заявку забирает тот, кто ответил первым.</p></div>
+        <div class="card"><h3>Ночь и выходные</h3><p>Вечером писать некому. К утру часть клиентов уже списалась с конкурентами.</p></div>
+        <div class="card"><h3>Пустые выезды</h3><p>Замерщик едет к клиентам без бюджета и решения — время бригады и деньги на ветер.</p></div>
+        <div class="card"><h3>Рутина менеджера</h3><p>Половина времени уходит на «сколько стоит» и одинаковые вопросы вместо продаж.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПАКЕТЫ -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Сколько стоит</span>
+        <h2>Понятные пакеты — от пробы до автоматизации под ключ</h2>
+        <p>Начать можно с пилота: увидите бота на своих заявках, прежде чем вкладываться.</p>
+      </div>
+      <div class="plans">
+        <div class="plan">
+          <div class="plan__name">Демо-бот</div>
+          <div class="plan__price">15 000 ₽</div>
+          <div class="plan__sub">проба перед разработкой</div>
+          <ul>
+            <li>Рабочий бот с вашим сценарием</li>
+            <li>Первичная обработка заявок</li>
+            <li>Запуск на ваших реальных обращениях</li>
+            <li>Понять пользу до полноценной разработки</li>
+          </ul>
+          <a href="#" class="btn btn--ghost btn--block" data-pop data-source="bots_plan_demo">Заказать демо</a>
+        </div>
+        <div class="plan plan--featured">
+          <span class="plan__badge">Оптимально</span>
+          <div class="plan__name">Разработка бота</div>
+          <div class="plan__price">30 000–50 000 ₽</div>
+          <div class="plan__sub">+ 10 000–15 000 ₽/мес поддержка</div>
+          <ul>
+            <li>Бот под ваши процессы</li>
+            <li>Приём, квалификация, запись клиентов</li>
+            <li>Расчёт вилки цены в диалоге</li>
+            <li>Интеграция с amoCRM / Bitrix24</li>
+            <li>Поддержка и доработки</li>
+          </ul>
+          <a href="#" class="btn btn--primary btn--block" data-pop data-source="bots_plan_dev">Обсудить</a>
+        </div>
+        <div class="plan">
+          <div class="plan__name">Автоматизация</div>
+          <div class="plan__price">от 80 000 ₽</div>
+          <div class="plan__sub">комплексно, под ключ</div>
+          <ul>
+            <li>Мультиканал: сайт + мессенджеры + Авито</li>
+            <li>Калькулятор-квиз для сайта</li>
+            <li>Аналитика по заявкам</li>
+            <li>Регулярные доработки сценариев</li>
+          </ul>
+          <a href="#" class="btn btn--ghost btn--block" data-pop data-source="bots_plan_auto">Обсудить</a>
+        </div>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:18px">Демо — один сценарий бота на одном канале. Оплата внешних сервисов (номер, API) — отдельно.</p>
+    </div>
+  </section>
+
+  <!-- КВИЗ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Экспресс-диагностика</span>
+        <h2>Сколько заявок теряется до менеджера?</h2>
+        <p>4 вопроса за минуту — покажем, где утекают клиенты и что закроет бот.</p>
+      </div>
+      <div class="quizbox"><div id="quiz" aria-live="polite"></div></div>
+    </div>
+  </section>
+
+  <!-- ФОРМА -->
+  <section class="section" id="form">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Бесплатная консультация</span>
+        <h2>Обсудим бота для вашей компании</h2>
+        <p>Расскажем, как бот встроится в ваш приём заявок, и предложим пилот.</p>
+      </div>
+      <form class="form js-lead" data-source="bots_form" data-niche-prefix="Чат-бот (стройка/ремонт), " novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-name">Имя</label>
+            <input type="text" id="f-name" name="name" placeholder="Как вас зовут" autocomplete="given-name">
+            <span class="err" data-for="name"></span>
+          </div>
+          <div class="field">
+            <label for="f-niche">Ваш город</label>
+            <input type="text" id="f-niche" name="niche" placeholder="Например: Краснодар">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-phone">Телефон</label>
+          <input type="tel" id="f-phone" name="phone" placeholder="+7 (900) 000-00-00" inputmode="tel">
+          <span class="err" data-for="phone"></span>
+        </div>
+        <label class="consent"><input type="checkbox" name="consent"> Я даю согласие на обработку персональных данных и принимаю <a href="privacy.html" target="_blank" rel="noopener">политику конфиденциальности</a>.</label>
+        <span class="err" data-for="consent"></span>
+        <button type="submit" class="btn btn--primary btn--block">Обсудить бота</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ПОДВАЛ -->
+  <footer class="ftr">
+    <div class="container">
+      <div class="ftr__top">
+        <div class="brand" style="color:#fff">
+          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4M9 13h.01M15 13h.01"/></svg></span>
+          <span>Чат-боты под ключ</span>
+        </div>
+        <div class="ftr__contacts">
+          <a href="tel:+79298301575">+7 929 830-15-75</a>
+          <a href="https://t.me/bsvtarget" target="_blank" rel="noopener">Telegram @bsvtarget</a>
+        </div>
+      </div>
+      <div class="ftr__legal">
+        ИП Путилов Александр Евгеньевич · ИНН 762703040128 · 150526, Ярославская область, Ярославский район, Ананьино, ул. Садовая, 26<br>
+        © 2026 · <a href="privacy.html">Политика конфиденциальности</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ПОП-АП -->
+  <div class="pop" id="pop">
+    <div class="pop__card">
+      <button class="pop__close" type="button" aria-label="Закрыть">×</button>
+      <h3>Обсудить бота</h3>
+      <p style="font-size:14px">Оставьте контакты — расскажем, как бот впишется в ваш поток заявок, и предложим пилот.</p>
+      <form class="js-lead" data-source="bots_popup" data-niche-prefix="Чат-бот (стройка/ремонт), " novalidate>
+        <div class="field">
+          <label for="p-name">Имя</label>
+          <input type="text" id="p-name" name="name" placeholder="Как вас зовут">
+          <span class="err" data-for="name"></span>
+        </div>
+        <div class="field">
+          <label for="p-phone">Телефон</label>
+          <input type="tel" id="p-phone" name="phone" placeholder="+7 (900) 000-00-00" inputmode="tel">
+          <span class="err" data-for="phone"></span>
+        </div>
+        <label class="consent"><input type="checkbox" name="consent"> Согласен на обработку данных и принимаю <a href="privacy.html" target="_blank" rel="noopener">политику</a>.</label>
+        <span class="err" data-for="consent"></span>
+        <button type="submit" class="btn btn--primary btn--block">Отправить</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ДАННЫЕ ДЕМО + КВИЗ -->
+  <script>
+    window.__DEMO = [
+      {who:'in',  text:'Здравствуйте! Подскажите, какой объект — квартира, дом или коммерция?'},
+      {who:'out', text:'Квартира, 62 м²'},
+      {who:'in',  text:'Ремонт «под ключ» или частичный? И в какие сроки хотите закончить?'},
+      {who:'out', text:'Под ключ, за 2 месяца'},
+      {who:'in',  text:'Понял. Ориентировочно это 900 000–1 200 000 ₽. Точную смету назовём после замера. Оставите телефон — менеджер запишет вас на бесплатный замер?'},
+      {who:'out', text:'Да, +7 900 123-45-67'},
+      {who:'in',  text:'Готово! Передал заявку менеджеру, он свяжется в ближайшее время 🙌'},
+      {who:'sys', text:'→ Лид ушёл в CRM: квартира 62 м², под ключ, 2 мес, бюджет есть, телефон получен'}
+    ];
+  </script>
+  <script>
+  (function(){
+    var el=document.getElementById('quiz'); if(!el) return;
+    function goal(n){try{if(typeof window.ym==='function')window.ym(110373071,'reachGoal',n);}catch(e){}}
+    var Z={
+      questions:[
+        {q:'За сколько в среднем менеджер отвечает на новую заявку?',opts:[
+          {t:'Бывает, через несколько часов',w:1,tag:'slow'},{t:'В течение часа',w:1,tag:'slow'},
+          {t:'За 10–15 минут',w:.5},{t:'Почти сразу',w:0}]},
+        {q:'Что происходит с заявками ночью и в выходные?',opts:[
+          {t:'Ждут до утра / понедельника',w:1,tag:'night'},{t:'Как получится',w:1,tag:'night'},
+          {t:'Есть дежурный, но не всегда',w:.5},{t:'Отвечаем круглосуточно',w:0}]},
+        {q:'Как часто замерщик едет впустую?',opts:[
+          {t:'Постоянно, много пустых',w:1,tag:'empty'},{t:'Регулярно',w:1,tag:'empty'},
+          {t:'Иногда',w:.5},{t:'Почти не бывает',w:0}]},
+        {q:'Кто отвечает на «сколько стоит?» и уточняет детали?',opts:[
+          {t:'Менеджер вручную, каждому',w:1,tag:'manual'},{t:'Я сам, между делами',w:1,tag:'manual'},
+          {t:'Есть скрипт, но всё руками',w:.5},{t:'Автоматизировано',w:0}]}
+      ],
+      tiers:[[2.5,'Клиенты утекают сразу в нескольких местах'],[1,'Есть пара мест, где вы теряете заявки'],[0,'Обработка выстроена — узкое место в другом']],
+      f:{
+        slow:['Медленный первый ответ','горячий клиент остывает за 5–15 минут. Бот отвечает за секунды в любое время.'],
+        night:['Ночные заявки ждут','к утру клиент уже написал конкуренту. Бот принимает и квалифицирует круглосуточно.'],
+        empty:['Замерщик ездит впустую','выезды без бюджета жгут время и деньги. Бот уточняет объём и бюджет заранее.'],
+        manual:['Всё на ручной обработке','менеджер вязнет в «сколько стоит». Бот берёт первичный диалог на себя.']
+      },
+      empty:['Обработка у вас выстроена','бот усилит то, что есть: снимет рутину и подстрахует в нерабочее время.']
+    };
+    var st={i:-1,a:[]};
+    function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+    function render(){ if(st.i===-1)return start(); if(st.i>=Z.questions.length)return result(); question(); }
+    function start(){
+      el.innerHTML='<div class="qz__top"><span class="qz__eyebrow">Экспресс-диагностика</span></div>'+
+        '<div class="qz__body"><h3 class="qz__q qz__q--big">Сколько заявок теряется до менеджера?</h3>'+
+        '<p class="qz__lead">4 вопроса за минуту. Покажем, где вы теряете клиентов.</p>'+
+        '<button class="btn btn--primary" id="qs">Узнать, где теряю заявки</button>'+
+        '<div class="qz__micro">Анонимно · 1 минута</div></div>';
+      document.getElementById('qs').onclick=function(){goal('quiz_start');st.i=0;render();};
+    }
+    function question(){
+      var q=Z.questions[st.i],pct=Math.round(st.i/Z.questions.length*100);
+      var o=q.opts.map(function(x,i){return '<button class="qz__opt" data-i="'+i+'"><span class="qz__dot"></span><span>'+esc(x.t)+'</span></button>';}).join('');
+      el.innerHTML='<div class="qz__top"><span class="qz__eyebrow">Экспресс-диагностика</span>'+
+        '<div class="qz__progress"><div class="qz__track"><div class="qz__fill" style="width:'+pct+'%"></div></div>'+
+        '<span class="qz__plabel">Шаг '+(st.i+1)+' из '+Z.questions.length+'</span></div></div>'+
+        '<div class="qz__body"><h3 class="qz__q">'+esc(q.q)+'</h3><div class="qz__opts">'+o+'</div>'+
+        (st.i>0?'<button class="qz__back" id="qb">← Назад</button>':'')+'</div>';
+      Array.prototype.forEach.call(el.querySelectorAll('.qz__opt'),function(b){b.onclick=function(){st.a[st.i]=q.opts[+b.dataset.i];st.i++;render();};});
+      var bk=document.getElementById('qb');if(bk)bk.onclick=function(){st.i--;render();};
+    }
+    function result(){
+      goal('quiz_result');
+      var sc=st.a.reduce(function(s,a){return s+(a?a.w:0);},0),tags=[];
+      st.a.forEach(function(a){if(a&&a.tag&&Z.f[a.tag]&&tags.indexOf(a.tag)<0)tags.push(a.tag);});
+      var head=Z.tiers[Z.tiers.length-1][1];
+      for(var t=0;t<Z.tiers.length;t++){if(sc>=Z.tiers[t][0]){head=Z.tiers[t][1];break;}}
+      var items=tags.length?tags.map(function(tg){var f=Z.f[tg];return '<li><span class="qz__mark">!</span><span><b>'+esc(f[0])+'</b> — '+esc(f[1])+'</span></li>';}).join(''):
+        '<li><span class="qz__mark">✓</span><span><b>'+esc(Z.empty[0])+'</b> — '+esc(Z.empty[1])+'</span></li>';
+      el.innerHTML='<div class="qz__top"><span class="qz__eyebrow">Ваш результат</span></div>'+
+        '<div class="qz__body"><div class="qz__diag">'+esc(head)+'</div><ul class="qz__find">'+items+'</ul>'+
+        '<div class="qz__ctawrap"><a class="btn btn--primary" href="#" data-pop data-source="bots_quiz">Обсудить бота для моей компании</a>'+
+        '<button class="qz__restart" id="qr">Пройти заново</button></div></div>';
+      var r=document.getElementById('qr');if(r)r.onclick=function(){st={i:-1,a:[]};render();};
+    }
+    render();
+  })();
+  </script>
+  <!-- Интерактивный калькулятор (демо) -->
+  <script>
+  (function(){
+    var area=document.getElementById('c-area'), lights=document.getElementById('c-lights'),
+        typeWrap=document.getElementById('c-type'), price=document.getElementById('c-price');
+    if(!area||!lights||!typeWrap||!price) return;
+    var ppm=350;
+    function fmt(n){ return n.toLocaleString('ru-RU'); }
+    function calc(){
+      var a=+area.value, l=+lights.value;
+      document.getElementById('c-area-v').textContent=a+' м²';
+      document.getElementById('c-lights-v').textContent=l;
+      var base = a*ppm + a*150 + l*1200;           // полотно + монтаж + светильники
+      var mn=Math.round(base*0.92/500)*500, mx=Math.round(base*1.08/500)*500;
+      price.textContent = fmt(mn)+' – '+fmt(mx)+' ₽';
+    }
+    area.addEventListener('input', calc);
+    lights.addEventListener('input', calc);
+    Array.prototype.forEach.call(typeWrap.querySelectorAll('.calc__opt'), function(b){
+      b.addEventListener('click', function(){
+        Array.prototype.forEach.call(typeWrap.querySelectorAll('.calc__opt'), function(x){ x.classList.remove('is-active'); });
+        b.classList.add('is-active'); ppm=+b.dataset.price; calc();
+      });
+    });
+    calc();
+  })();
+  </script>
+  <script src="js/ai-landing.js?v=7"></script>
+</body>
+</html>
