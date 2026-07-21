@@ -474,26 +474,10 @@
               <input type="text" class="ym-disable-keys" id="field-niche" name="niche" placeholder="Например: строительство, e-commerce">
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="field-method">Удобный способ связи</label>
-              <select id="field-method" name="method" required>
-                <option value="" selected disabled>Выберите способ</option>
-                <option value="telegram">Telegram</option>
-                <option value="phone">Телефон</option>
-                <option value="vk">VK</option>
-              </select>
-              <span class="field-error" id="error-method" role="alert"></span>
-            </div>
-            <div class="form-field">
-              <label for="field-contact" id="label-contact">Контакт</label>
-              <input type="text" class="ym-disable-keys" id="field-contact" name="contact" placeholder="Сначала выберите способ связи" disabled required>
-              <span class="field-error" id="error-contact" role="alert"></span>
-            </div>
-          </div>
           <div class="form-field form-field--full">
-            <label for="field-comment">Комментарий <span class="field-optional">(необязательно)</span></label>
-            <textarea class="ym-disable-keys" id="field-comment" name="comment" placeholder="Расскажите о задаче, бюджете или текущей рекламе" rows="4"></textarea>
+            <label for="field-phone">Телефон</label>
+            <input type="tel" class="ym-disable-keys" id="field-phone" name="phone" placeholder="+7 (900) 000-00-00" autocomplete="tel" inputmode="tel" required>
+            <span class="field-error" id="error-phone" role="alert"></span>
           </div>
           <div class="form-consent">
             <input type="checkbox" id="field-consent" name="consent" required>

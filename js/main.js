@@ -163,6 +163,27 @@
     return out;
   }
 
+  /* Маска телефона: формат РФ +7 (___) ___-__-__. По умолчанию +7. */
+  function maskPhone(input) {
+    function format(v) {
+      let d = v.replace(/\D/g, '');
+      if (d[0] === '8') d = '7' + d.slice(1);
+      if (d[0] !== '7') d = '7' + d;
+      d = d.slice(0, 11);
+      let r = '+7';
+      if (d.length > 1) r += ' (' + d.slice(1, 4);
+      if (d.length >= 4) r += ') ' + d.slice(4, 7);
+      if (d.length >= 7) r += '-' + d.slice(7, 9);
+      if (d.length >= 9) r += '-' + d.slice(9, 11);
+      return r;
+    }
+    input.addEventListener('focus', function () { if (!input.value.trim()) input.value = '+7 ('; });
+    input.addEventListener('input', function () { input.value = format(input.value); });
+    input.addEventListener('blur', function () {
+      if (input.value.replace(/\D/g, '').length <= 1) input.value = '';
+    });
+  }
+
   /* Страницы в подпапках (cases/, lp/) лежат на уровень глубже — им нужен ../ */
   const isSubPage = /\/(cases|lp)\//.test(location.pathname);
 
@@ -170,55 +191,24 @@
   const thankYouHref = isSubPage ? '../spasibo.html' : 'spasibo.html';
 
   function initContactForm(form, getSource, onAfterReset) {
-    const methodSel = form.querySelector('[name="method"]');
-    const contactInput = form.querySelector('[name="contact"]');
     const nameInput = form.querySelector('[name="name"]');
+    const phoneInput = form.querySelector('[name="phone"]');
     const consent = form.querySelector('[name="consent"]');
-    const contactField = contactInput.closest('.form-field');
-    const contactLabel = contactField ? contactField.querySelector('label') : null;
+    const phoneRe = /^(\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$/;
+    if (phoneInput) maskPhone(phoneInput);
 
     function setError(field, msg) {
       const el = form.querySelector('.field-error[data-for="' + field + '"]') || document.getElementById('error-' + field);
       if (el) el.textContent = msg || '';
     }
-    function currentMethod() { return METHODS[methodSel.value]; }
-    function resetContact() {
-      contactInput.disabled = true;
-      contactInput.placeholder = 'Сначала выберите способ связи';
-      if (contactLabel) contactLabel.textContent = 'Контакт';
-    }
-
-    methodSel.addEventListener('change', function () {
-      const m = currentMethod();
-      if (m) {
-        contactInput.disabled = false;
-        contactInput.placeholder = m.placeholder;
-        if (contactLabel) contactLabel.textContent = 'Контакт (' + m.label + ')';
-        contactInput.value = m.prefix || '';
-        try {
-          contactInput.focus();
-          const len = contactInput.value.length;
-          contactInput.setSelectionRange(len, len);
-        } catch (e) {}
-      } else {
-        contactInput.value = '';
-        resetContact();
-      }
-      setError('method', '');
-      setError('contact', '');
-    });
 
     function validate() {
       let ok = true;
       if (!nameInput.value.trim()) { setError('name', 'Укажите имя.'); ok = false; } else { setError('name', ''); }
-      const m = currentMethod();
-      if (!m) { setError('method', 'Выберите способ связи.'); ok = false; } else { setError('method', ''); }
-      if (m) {
-        const val = contactInput.value.trim();
-        if (!val) { setError('contact', 'Заполните контакт.'); ok = false; }
-        else if (!m.pattern.test(val)) { setError('contact', m.error); ok = false; }
-        else { setError('contact', ''); }
-      }
+      const ph = (phoneInput.value || '').trim();
+      if (!ph) { setError('phone', 'Укажите телефон.'); ok = false; }
+      else if (!phoneRe.test(ph)) { setError('phone', 'Номер в формате +7 900 000-00-00.'); ok = false; }
+      else { setError('phone', ''); }
       if (!consent.checked) { setError('consent', 'Нужно согласие на обработку персональных данных.'); ok = false; } else { setError('consent', ''); }
       return ok;
     }
@@ -244,14 +234,14 @@
          Префикс из data-niche-prefix склеивается с полем, чтобы в CRM пришло
          «Натяжные потолки, Краснодар», а не просто «Краснодар». */
       const nichePrefix = form.getAttribute('data-niche-prefix') || '';
-      const nicheValue = (nichePrefix + val('niche')).trim();
+      const nicheValue = (nichePrefix + val('niche')).trim().replace(/,\s*$/, '');
 
       const data = {
         name: val('name'),
         niche: nicheValue,
-        method: methodSel.value,
-        contact: contactInput.value.trim(),
-        comment: val('comment'),
+        method: 'phone',
+        contact: phoneInput.value.trim(),
+        comment: '',
         form_source: (getSource && getSource()) || 'unknown',
         page_url: location.href
       };
@@ -317,11 +307,7 @@
             '<div class="form-field"><label>Имя</label><input type="text" class="ym-disable-keys" name="name" placeholder="Ваше имя" autocomplete="given-name" required><span class="field-error" data-for="name" role="alert"></span></div>' +
             '<div class="form-field"><label>Ниша бизнеса</label><input type="text" class="ym-disable-keys" name="niche" placeholder="Например: строительство, e-commerce"></div>' +
           '</div>' +
-          '<div class="form-row">' +
-            '<div class="form-field"><label>Удобный способ связи</label><select name="method" required><option value="" selected disabled>Выберите способ</option><option value="telegram">Telegram</option><option value="phone">Телефон</option><option value="vk">VK</option></select><span class="field-error" data-for="method" role="alert"></span></div>' +
-            '<div class="form-field"><label>Контакт</label><input type="text" class="ym-disable-keys" name="contact" placeholder="Сначала выберите способ связи" disabled required><span class="field-error" data-for="contact" role="alert"></span></div>' +
-          '</div>' +
-          '<div class="form-field form-field--full"><label>Комментарий <span class="field-optional">(необязательно)</span></label><textarea class="ym-disable-keys" name="comment" rows="4" placeholder="Расскажите о задаче, бюджете или текущей рекламе"></textarea></div>' +
+          '<div class="form-field form-field--full"><label>Телефон</label><input type="tel" class="ym-disable-keys" name="phone" placeholder="+7 (900) 000-00-00" autocomplete="tel" inputmode="tel" required><span class="field-error" data-for="phone" role="alert"></span></div>' +
           '<div class="form-consent"><input type="checkbox" name="consent" required id="pf-consent"><label for="pf-consent">Я даю согласие на обработку персональных данных и принимаю <a href="' + privacyHref + '" target="_blank" rel="noopener noreferrer">политику конфиденциальности</a>.</label></div>' +
           '<span class="field-error" data-for="consent" role="alert"></span>' +
           '<button type="submit" class="btn btn-cta btn-submit">Получить экспресс-аудит</button>' +
