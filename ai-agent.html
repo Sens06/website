@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Внедрение ИИ-агента для бизнеса: сам ведёт клиента, квалифицирует и заносит сделку в CRM</title>
+  <meta name="description" content="Разработка и внедрение ИИ-агента для бизнеса. В отличие от чат-бота, агент не отвечает по скрипту, а сам ведёт клиента, квалифицирует, отвечает по базе знаний и заносит сделку в CRM — круглосуточно. Начинаем с пилота от 15 000 ₽.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/ai-landing.css?v=8">
+  <link rel="canonical" href="https://clatz.ru/ai-agent">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="ИИ-агент для бизнеса: не бот по скрипту, а сотрудник, который сам действует">
+  <meta property="og:description" content="Внедряем ИИ-агента: ведёт клиента, квалифицирует, отвечает по базе знаний, заносит сделку в CRM. Начинаем с пилота от 15 000 ₽.">
+  <meta property="og:url" content="https://clatz.ru/ai-agent">
+  <meta property="og:image" content="https://clatz.ru/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Service","name":"Внедрение ИИ-агента для бизнеса","serviceType":"Разработка и внедрение ИИ-агентов","areaServed":"RU","url":"https://clatz.ru/ai-agent"}
+  </script>
+
+  <!-- Yandex.Metrika -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=110373071','ym');
+    ym(110373071,'init',{ssr:true,webvisor:true,clickmap:true,accurateTrackBounce:true,trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/110373071" style="position:absolute;left:-9999px;" alt="" /></div></noscript>
+</head>
+<body>
+
+  <!-- ШАПКА -->
+  <header class="hdr">
+    <div class="container hdr__in">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+        </span>
+        <span>ИИ-агенты</span>
+      </div>
+      <nav class="nav" id="nav">
+        <button class="nav__close" id="nav-close" type="button" aria-label="Закрыть меню">×</button>
+        <a href="#scenarios">Сценарии</a>
+        <a href="#vs">Агент или бот</a>
+        <a href="#features">Возможности</a>
+        <a href="#how">Как внедряем</a>
+        <a href="#pricing">Цены</a>
+        <a href="#form">Контакты</a>
+        <a href="tel:+79298301575" class="nav__phone">+7 929 830-15-75</a>
+        <a href="#" class="btn btn--primary nav__cta" data-pop data-source="agent_menu">Обсудить</a>
+      </nav>
+      <div class="hdr__actions">
+        <a href="tel:+79298301575" class="hdr__phone">+7 929 830-15-75</a>
+        <a href="#" class="btn btn--primary" data-pop data-source="agent_header">Обсудить агента</a>
+        <button class="burger" id="burger" type="button" aria-label="Меню" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="nav-scrim" id="nav-scrim" hidden></div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero__grid">
+      <div>
+        <span class="eyebrow">Для малого и среднего бизнеса</span>
+        <h1>ИИ-агент: не отвечает по скрипту, а сам ведёт клиента и заносит сделку в CRM</h1>
+        <p class="lead"><strong>Обычный бот работает по сценарию и упирается в тупик на нестандартном вопросе. ИИ-агент понимает цель, сам принимает решение и выполняет действие</strong> — уточняет детали, отвечает по вашей базе знаний, ставит задачу менеджеру и заводит сделку. Круглосуточно.</p>
+        <ul class="ticks">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Сам квалифицирует клиента и передаёт менеджеру готового</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Заносит данные и сделки в CRM без ручного ввода</li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Отвечает на вопросы по вашим документам, а не общими фразами</li>
+        </ul>
+        <div class="hero__actions">
+          <a href="#" class="btn btn--primary" data-pop data-source="agent_hero">Обсудить внедрение</a>
+          <a href="#vs" class="btn btn--ghost">Чем агент лучше бота</a>
+        </div>
+        <p class="hero__note">Начинаем с разбора и пилота на одном процессе — от 15 000 ₽.</p>
+      </div>
+
+      <!-- ДЕМО-СИМУЛЯТОР -->
+      <div id="demo">
+        <div class="demo">
+          <div class="demo__bar"><span class="demo__dot"></span><span class="demo__title">AI-продавец ведёт клиента · демо</span></div>
+          <div class="demo__roles">
+            <button type="button" class="demo__role is-active" data-role="seller">AI-продавец</button>
+            <button type="button" class="demo__role" data-role="hr">AI-HR</button>
+            <button type="button" class="demo__role" data-role="lawyer">AI-юрист</button>
+          </div>
+          <div class="demo__body" id="demo-body">
+            <div class="bubble bubble--in">Выберите роль и нажмите «Запустить демо» — покажу, как агент сам доводит диалог до результата 👇</div>
+          </div>
+          <div class="demo__foot"><button class="btn btn--primary" id="demo-run" type="button">▶ Запустить демо</button></div>
+        </div>
+        <p class="fine" style="text-align:center;margin-top:10px">Пример: агент уточняет детали, отвечает клиенту и сам заводит сделку в CRM — без участия менеджера.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ТИПОВЫЕ СЦЕНАРИИ -->
+  <section class="section section--alt" id="scenarios">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Типовые сценарии</span>
+        <h2>Каких ИИ-агентов делаем</h2>
+        <p>Каждый агент закрывает роль, на которую обычно нанимают человека. Собираем под вашу задачу.</p>
+      </div>
+      <div class="grid grid--3">
+        <div class="card">
+          <span class="card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
+          <h3>AI-продавец</h3>
+          <p>Принимает заявки, отвечает на «сколько стоит», квалифицирует по бюджету и задаче, доводит до сделки в CRM и отдаёт менеджеру тёплого клиента.</p>
+        </div>
+        <div class="card">
+          <span class="card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <h3>AI-HR (рекрутер)</h3>
+          <p>Обрабатывает отклики: отвечает на вопросы о вакансии, собирает анкету, отсеивает нецелевых и назначает собеседование. Снимает первичный отбор с рекрутёра.</p>
+        </div>
+        <div class="card">
+          <span class="card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M5 7l-3 6h6z"/><path d="M19 7l-3 6h6z"/><path d="M8 21h8"/></svg></span>
+          <h3>AI-юрист</h3>
+          <p>Отвечает на типовые правовые вопросы по вашим документам и регламентам, готовит проекты типовых бумаг, консультирует клиентов 24/7. Сложное — передаёт живому юристу.</p>
+        </div>
+        <div class="card">
+          <span class="card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+          <h3>AI-психолог</h3>
+          <p>Поддерживающий диалог и первичная помощь: выслушивает, отвечает на частые вопросы, при необходимости мягко направляет к специалисту. Для сервисов заботы и поддержки.</p>
+        </div>
+        <div class="card">
+          <span class="card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <h3>AI-администратор</h3>
+          <p>Записывает клиентов, подтверждает и напоминает о визите, переносит запись, отвечает про адрес, часы и цены. Для клиник, салонов и сферы услуг.</p>
+        </div>
+        <div class="card">
+          <span class="card__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></span>
+          <h3>AI-поддержка</h3>
+          <p>Первая линия: отвечает по базе знаний, сообщает статус заказа и доставки, решает типовые обращения и эскалирует сложное человеку.</p>
+        </div>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:20px">Нужен свой сценарий — соберём агента под ваш процесс. Список ролей не ограничен.</p>
+    </div>
+  </section>
+
+  <!-- АГЕНТ vs БОТ -->
+  <section class="section" id="vs">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">В чём разница</span>
+        <h2>Чат-бот отвечает. ИИ-агент — действует</h2>
+        <p>Это не «бот поумнее». Разница в том, что агент сам доводит задачу до результата.</p>
+      </div>
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Обычный чат-бот</h3>
+          <p>Идёт по заранее прописанному сценарию. Шаг влево от скрипта — «я вас не понял» или переключение на человека. Данные в CRM всё равно вносит менеджер руками. Полезен для FAQ, но продажи не доводит.</p>
+        </div>
+        <div class="card" style="border-color:var(--brand)">
+          <h3>ИИ-агент</h3>
+          <p>Понимает цель разговора, сам строит следующий шаг и <strong>выполняет действие</strong>: отвечает по вашим документам, уточняет недостающее, создаёт сделку и ставит задачу менеджеру, меняет статус. На нестандартный вопрос отвечает по смыслу, а не упирается в тупик.</p>
+        </div>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:20px">Поэтому агент дороже бота: за ним стоит логика принятия решений и подключение к вашим системам, а не готовый шаблон. Мы объясняем это конкретными действиями, а не словом «умнее».</p>
+    </div>
+  </section>
+
+  <!-- ВОЗМОЖНОСТИ (функции) -->
+  <section class="section section--alt" id="features">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Возможности</span>
+        <h2>Что агент умеет под капотом</h2>
+      </div>
+      <div class="caps">
+        <div class="caps__item">Понимает свободную речь, а не только кнопки и команды</div>
+        <div class="caps__item">Отвечает по вашей базе знаний: документы, прайсы, регламенты</div>
+        <div class="caps__item">Заносит данные и сделки в amoCRM / Bitrix24</div>
+        <div class="caps__item">Работает в мессенджерах, на сайте и по телефону (голос)</div>
+        <div class="caps__item">Квалифицирует и эскалирует сложное живому сотруднику</div>
+        <div class="caps__item">Собирает статистику диалогов и заявок</div>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:20px">Набор возможностей подбираем под задачу — не всё нужно каждому бизнесу.</p>
+    </div>
+  </section>
+
+  <!-- КАК ВНЕДРЯЕМ -->
+  <section class="section" id="how">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Как внедряем</span>
+        <h2>Без «большого проекта на полгода» — по шагам и с быстрым результатом</h2>
+      </div>
+      <div class="steps">
+        <div class="card"><span class="card__num">1</span><h3>Разбираем процесс</h3><p>Находим участок, который отнимает больше всего времени и где теряются заявки, — с него и начинаем.</p></div>
+        <div class="card"><span class="card__num">2</span><h3>Собираем базу знаний</h3><p>Загружаем в агента ваши документы, прайсы и правила — чтобы он отвечал фактами о вашем бизнесе, а не общими словами.</p></div>
+        <div class="card"><span class="card__num">3</span><h3>Подключаем к системам</h3><p>Связываем агента с сайтом, мессенджерами и CRM (amoCRM / Bitrix24) — чтобы он не просто отвечал, а действовал.</p></div>
+        <div class="card"><span class="card__num">4</span><h3>Пилот на ваших данных</h3><p>Запускаем на реальном потоке за 5–7 дней. Вы видите работу агента до того, как вкладываться в полное внедрение.</p></div>
+        <div class="card"><span class="card__num">5</span><h3>Ведём и расширяем</h3><p>Дообучаем на реальных диалогах, дорабатываем сценарии и подключаем следующие процессы.</p></div>
+      </div>
+      <div class="cta-row">
+        <p>Начнём с одного процесса и пилота без риска — не устроит, дальше не платите.</p>
+        <a href="#" class="btn btn--primary" data-pop data-source="agent_how">Обсудить пилот</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ДО/ПОСЛЕ -->
+  <section class="section section--alt" id="benefits">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Знакомо?</span>
+        <h2>Что меняется, когда роль ведёт агент</h2>
+      </div>
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Сейчас</h3>
+          <p>Менеджеры отвечают на одни и те же вопросы по кругу. Заявки переносят в CRM руками — что-то теряется. Вечером и в выходные обращения ждут ответа до утра. Больше заявок — нужно больше людей.</p>
+        </div>
+        <div class="card" style="border-color:var(--brand)">
+          <h3>С ИИ-агентом</h3>
+          <p>Рутину и первичный диалог ведёт агент, люди — на сделках и сложных клиентах. Данные попадают в CRM сами. Обращения обрабатываются круглосуточно. Поток растёт без пропорционального роста штата.</p>
+        </div>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:20px">Насколько вырастет эффективность — зависит от процесса и потока обращений; оценим на вашем примере, без обещаний «в разы». Ориентир рынка: агент оправдан при потоке от ~300 обращений в месяц.</p>
+    </div>
+  </section>
+
+  <!-- КАЛЬКУЛЯТОР ОКУПАЕМОСТИ -->
+  <style>
+    .calc{display:grid;gap:24px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+    @media(min-width:900px){.calc{grid-template-columns:1.1fr .9fr;gap:36px}}
+    .calc__row{margin-bottom:18px}
+    .calc__row:last-child{margin-bottom:0}
+    .calc__row label{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;font-weight:600;margin-bottom:8px}
+    .calc__val{color:var(--brand);white-space:nowrap}
+    .calc__row input[type=range]{width:100%;accent-color:var(--brand);height:6px}
+    .calc__result{background:var(--brand-tint);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:16px}
+    .calc__metric{display:flex;flex-direction:column;gap:3px}
+    .calc__metric b{font-size:25px;color:var(--brand-dark);line-height:1.1}
+    .calc__metric span{font-size:13px;color:#475467}
+    .calc__cta{margin-top:auto}
+    .demo__roles{display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--bg-alt)}
+    .demo__role{font:inherit;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:.15s}
+    .demo__role:hover{border-color:var(--brand);color:var(--brand)}
+    .demo__role.is-active{background:var(--brand);border-color:var(--brand);color:#fff}
+  </style>
+  <section class="section" id="calc">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Калькулятор</span>
+        <h2>Посчитайте, когда агент окупится</h2>
+        <p>Прикиньте, сколько рутины закроет агент и за сколько окупится внедрение. Двигайте ползунки.</p>
+      </div>
+      <div class="calc">
+        <div class="calc__controls">
+          <div class="calc__row">
+            <label>Обращений в день <span class="calc__val" id="cv-req">30</span></label>
+            <input type="range" id="c-req" min="5" max="200" step="5" value="30">
+          </div>
+          <div class="calc__row">
+            <label>Доля типовых обращений <span class="calc__val" id="cv-rout">60%</span></label>
+            <input type="range" id="c-rout" min="20" max="90" step="5" value="60">
+          </div>
+          <div class="calc__row">
+            <label>Время менеджера на одно обращение <span class="calc__val" id="cv-min">8 мин</span></label>
+            <input type="range" id="c-min" min="2" max="20" step="1" value="8">
+          </div>
+          <div class="calc__row">
+            <label>Зарплата менеджера <span class="calc__val" id="cv-sal">80 000 ₽</span></label>
+            <input type="range" id="c-sal" min="40000" max="150000" step="5000" value="80000">
+          </div>
+        </div>
+        <div class="calc__result">
+          <div class="calc__metric"><b id="cr-routine">—</b><span>обращений в месяц агент закрывает сам</span></div>
+          <div class="calc__metric"><b id="cr-money">—</b><span>экономия на ФОТ в месяц (с налогами)</span></div>
+          <div class="calc__metric"><b id="cr-payback">—</b><span id="cr-payback-sub">окупаемость внедрения</span></div>
+          <a href="#" class="btn btn--primary btn--block calc__cta" data-pop data-source="agent_calc">Обсудить внедрение</a>
+        </div>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:18px">Оценка ориентировочная: реальный эффект зависит от процесса и качества внедрения. Точный расчёт — на консультации. Цена внедрения в расчёте — ~90 000 ₽ + 15 000 ₽/мес.</p>
+    </div>
+  </section>
+  <script>
+    (function(){
+      var IMPL=90000, SUB=15000, HRS=160, TAX=1.3;
+      var g=function(id){return document.getElementById(id);};
+      var req=g('c-req'),rout=g('c-rout'),min=g('c-min'),sal=g('c-sal');
+      if(!req)return;
+      var fmt=function(n){return Math.round(n).toLocaleString('ru-RU');};
+      function calc(){
+        var perDay=+req.value, share=+rout.value/100, mpr=+min.value, salary=+sal.value;
+        g('cv-req').textContent=perDay;
+        g('cv-rout').textContent=rout.value+'%';
+        g('cv-min').textContent=min.value+' мин';
+        g('cv-sal').textContent=fmt(salary)+' ₽';
+        var routine=perDay*30*share;
+        var hours=routine*mpr/60;
+        var saving=(hours/HRS)*salary*TAX;
+        var net=saving-SUB;
+        g('cr-routine').textContent='~'+fmt(routine);
+        g('cr-money').textContent='~'+fmt(saving)+' ₽';
+        if(net>0){
+          var pb=IMPL/net;
+          g('cr-payback').textContent=pb<1?'меньше месяца':'~'+Math.round(pb)+' мес';
+          g('cr-payback-sub').textContent='окупаемость внедрения';
+        }else{
+          g('cr-payback').textContent='от ~300 обр./мес';
+          g('cr-payback-sub').textContent='на этом потоке агент пока не окупается';
+        }
+      }
+      [req,rout,min,sal].forEach(function(i){i.addEventListener('input',calc);});
+      calc();
+    })();
+  </script>
+
+  <!-- ПАКЕТЫ -->
+  <section class="section section--alt" id="pricing">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Сколько стоит</span>
+        <h2>Понятные пакеты — от пробы до агента под ключ</h2>
+        <p>Начать можно с пилота на одном процессе, прежде чем вкладываться в большее.</p>
+      </div>
+      <div class="plans">
+        <div class="plan">
+          <div class="plan__name">Пилот</div>
+          <div class="plan__price">от 15 000 ₽</div>
+          <div class="plan__sub">один процесс · 5–7 дней</div>
+          <ul>
+            <li>Разбор процесса</li>
+            <li>Агент под одну задачу</li>
+            <li>Запуск на реальных данных</li>
+            <li>Не устроит — дальше не платите</li>
+          </ul>
+          <a href="#" class="btn btn--ghost btn--block" data-pop data-source="agent_plan_pilot">Начать с пилота</a>
+        </div>
+        <div class="plan plan--featured">
+          <span class="plan__badge">Оптимально</span>
+          <div class="plan__name">Внедрение</div>
+          <div class="plan__price">60 000–120 000 ₽</div>
+          <div class="plan__sub">+ 15 000 ₽/мес сопровождение</div>
+          <ul>
+            <li>ИИ-агент под ваш процесс</li>
+            <li>База знаний по вашим документам</li>
+            <li>Интеграция с amoCRM / Bitrix24</li>
+            <li>Подключение мессенджеров и сайта</li>
+            <li>Сопровождение и дообучение</li>
+          </ul>
+          <a href="#" class="btn btn--primary btn--block" data-pop data-source="agent_plan_main">Обсудить</a>
+        </div>
+        <div class="plan">
+          <div class="plan__name">Комплексный</div>
+          <div class="plan__price">от 200 000 ₽</div>
+          <div class="plan__sub">несколько процессов, под ключ</div>
+          <ul>
+            <li>Несколько агентов / процессов</li>
+            <li>Мультиканал + аналитика</li>
+            <li>Отчёты и сводки</li>
+            <li>Приоритетная поддержка</li>
+          </ul>
+          <a href="#" class="btn btn--ghost btn--block" data-pop data-source="agent_plan_full">Обсудить</a>
+        </div>
+      </div>
+      <p class="fine" style="text-align:center;margin-top:18px">Цены — ориентир. Итог зависит от числа процессов, глубины интеграций и объёма диалогов. Оплата внешних сервисов (API модели, номера, телефония) — отдельно.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Частые вопросы</span>
+        <h2>Что обычно спрашивают перед стартом</h2>
+      </div>
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Чем агент отличается от чат-бота?</h3>
+          <p>Бот идёт по сценарию и передаёт вас человеку, когда сценарий кончился. Агент понимает цель и сам выполняет действие: отвечает по вашим данным, заносит сделку в CRM, ставит задачу. На нестандартный вопрос отвечает по смыслу.</p>
+        </div>
+        <div class="card">
+          <h3>А если у нас нет CRM?</h3>
+          <p>Не обязательна для старта. Агент может присылать заявки в Telegram, на почту или в таблицу. CRM подключим, когда будете готовы, — это отдельный шаг.</p>
+        </div>
+        <div class="card">
+          <h3>Сколько занимает внедрение?</h3>
+          <p>Пилот на одном процессе — 5–7 дней. Полное внедрение с интеграцией в CRM и мессенджеры — обычно 2–4 недели, в зависимости от числа каналов.</p>
+        </div>
+        <div class="card">
+          <h3>Что, если агент не справится?</h3>
+          <p>Поэтому и начинаем с пилота на одном процессе и реальных заявках. Не устроит результат — дальше не платите. Сложные обращения агент передаёт менеджеру, а не выдумывает ответ.</p>
+        </div>
+        <div class="card">
+          <h3>Насколько это безопасно для данных?</h3>
+          <p>Работаем по 152-ФЗ. Данные клиентов остаются в ваших системах, доступы согласуем с вами. На сайте — согласие на обработку персональных данных.</p>
+        </div>
+        <div class="card">
+          <h3>На чём работает агент?</h3>
+          <p>На современных ИИ-моделях — за счёт этого запуск занимает дни, а не месяцы. Мы ведём проект и держим человеческий контроль: агент не действует «вслепую», логику согласуем и дорабатываем.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФОРМА -->
+  <section class="section section--alt" id="form">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Бесплатная консультация</span>
+        <h2>Обсудим ИИ-агента для вашего бизнеса</h2>
+        <p>Разберём ваш процесс, покажем, что агент возьмёт на себя первым, и предложим пилот.</p>
+      </div>
+      <form class="form js-lead" data-source="agent_form" data-niche-prefix="ИИ-агент, " novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-name">Имя</label>
+            <input type="text" id="f-name" name="name" placeholder="Как вас зовут" autocomplete="given-name">
+            <span class="err" data-for="name"></span>
+          </div>
+          <div class="field">
+            <label for="f-niche">Сфера бизнеса</label>
+            <input type="text" id="f-niche" name="niche" placeholder="Например: интернет-магазин">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-phone">Телефон</label>
+          <input type="tel" id="f-phone" name="phone" placeholder="+7 (900) 000-00-00" inputmode="tel">
+          <span class="err" data-for="phone"></span>
+        </div>
+        <label class="consent"><input type="checkbox" name="consent"> Я даю согласие на обработку персональных данных и принимаю <a href="privacy.html" target="_blank" rel="noopener">политику конфиденциальности</a>.</label>
+        <span class="err" data-for="consent"></span>
+        <button type="submit" class="btn btn--primary btn--block">Обсудить внедрение</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ПОДВАЛ -->
+  <footer class="ftr">
+    <div class="container">
+      <div class="ftr__top">
+        <div class="brand" style="color:#fff">
+          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></span>
+          <span>ИИ-агенты</span>
+        </div>
+        <div class="ftr__contacts">
+          <a href="tel:+79298301575">+7 929 830-15-75</a>
+          <a href="https://t.me/bsvtarget" target="_blank" rel="noopener">Telegram @bsvtarget</a>
+        </div>
+      </div>
+      <div class="ftr__legal">
+        ИП Путилов Александр Евгеньевич · ИНН 762703040128 · 150526, Ярославская область, Ярославский район, Ананьино, ул. Садовая, 26<br>
+        © 2026 · <a href="privacy.html">Политика конфиденциальности</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ПОП-АП -->
+  <div class="pop" id="pop">
+    <div class="pop__card">
+      <button class="pop__close" type="button" aria-label="Закрыть">×</button>
+      <h3>Обсудить ИИ-агента</h3>
+      <p style="font-size:14px">Оставьте контакты — разберём ваш процесс и предложим, с чего начать.</p>
+      <form class="js-lead" data-source="agent_popup" data-niche-prefix="ИИ-агент, " novalidate>
+        <div class="field">
+          <label for="p-name">Имя</label>
+          <input type="text" id="p-name" name="name" placeholder="Как вас зовут">
+          <span class="err" data-for="name"></span>
+        </div>
+        <div class="field">
+          <label for="p-phone">Телефон</label>
+          <input type="tel" id="p-phone" name="phone" placeholder="+7 (900) 000-00-00" inputmode="tel">
+          <span class="err" data-for="phone"></span>
+        </div>
+        <label class="consent"><input type="checkbox" name="consent"> Согласен на обработку данных и принимаю <a href="privacy.html" target="_blank" rel="noopener">политику</a>.</label>
+        <span class="err" data-for="consent"></span>
+        <button type="submit" class="btn btn--primary btn--block">Отправить</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ДАННЫЕ ДЕМО (три сценария, переключаются кнопками ролей) -->
+  <script>
+    window.__SCENARIOS = {
+      seller: [
+        {who:'in',  text:'Здравствуйте! Вы оставили заявку на сайте. Подскажите, что вас интересует?'},
+        {who:'out', text:'Нужна консультация по услуге'},
+        {who:'in',  text:'Уточню пару деталей, чтобы подобрать специалиста. В каком вы городе?'},
+        {who:'out', text:'Москва'},
+        {who:'in',  text:'Когда удобно, чтобы менеджер связался — сегодня или завтра?'},
+        {who:'out', text:'Сегодня после 18:00'},
+        {who:'in',  text:'Записал! Передал менеджеру, он позвонит после 18:00 🙌'},
+        {who:'sys', text:'→ Сделка создана в CRM · задача менеджеру на 18:00 · клиент получил подтверждение'}
+      ],
+      hr: [
+        {who:'in',  text:'Здравствуйте! Вы откликнулись на вакансию менеджера. Задам пару вопросов, чтобы не тратить ваше время 🙂'},
+        {who:'out', text:'Хорошо'},
+        {who:'in',  text:'Есть опыт в продажах? Если да — сколько лет?'},
+        {who:'out', text:'Да, около 2 лет'},
+        {who:'in',  text:'Готовы работать в офисе в Москве, график 5/2?'},
+        {who:'out', text:'Да, подходит'},
+        {who:'in',  text:'Отлично, вы нам подходите. Передаю рекрутёру — пригласим на собеседование. Когда удобно?'},
+        {who:'out', text:'В будни после 17:00'},
+        {who:'sys', text:'→ Анкета сохранена · кандидат отмечен «целевой» · задача рекрутёру на интервью'}
+      ],
+      lawyer: [
+        {who:'in',  text:'Здравствуйте! Помогу с юридическим вопросом. О чём речь?'},
+        {who:'out', text:'Нужен договор аренды помещения'},
+        {who:'in',  text:'Уточню: аренда коммерческая или жилая и на какой срок?'},
+        {who:'out', text:'Коммерческая, на 11 месяцев'},
+        {who:'in',  text:'Понял. Подготовлю проект договора по вашему шаблону. Нужен акт приёма-передачи к нему?'},
+        {who:'out', text:'Да, нужен'},
+        {who:'in',  text:'Готовлю проект договора и акта. Сложные правки согласует наш юрист. Отправить на почту?'},
+        {who:'out', text:'Да, на почту'},
+        {who:'sys', text:'→ Проект договора и акта сформирован · передан юристу на проверку · уйдёт клиенту на почту'}
+      ]
+    };
+    window.__DEMO = window.__SCENARIOS.seller;
+    (function(){
+      var roles = document.querySelectorAll('.demo__role');
+      var btn = document.getElementById('demo-run');
+      var title = document.querySelector('.demo__title');
+      var titles = {seller:'AI-продавец ведёт клиента · демо', hr:'AI-HR отбирает кандидата · демо', lawyer:'AI-юрист готовит документ · демо'};
+      roles.forEach(function(r){
+        r.addEventListener('click', function(){
+          roles.forEach(function(x){ x.classList.remove('is-active'); });
+          r.classList.add('is-active');
+          var role = r.getAttribute('data-role');
+          window.__DEMO = window.__SCENARIOS[role] || window.__SCENARIOS.seller;
+          if (title && titles[role]) title.textContent = titles[role];
+          if (btn) btn.click();
+        });
+      });
+    })();
+  </script>
+  <script src="js/ai-landing.js?v=8"></script>
+</body>
+</html>

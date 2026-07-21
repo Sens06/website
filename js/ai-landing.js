@@ -179,11 +179,11 @@
         var target = document.querySelector(href);
         if (target) {
           e.preventDefault();
-          toggle(false);
+          toggle(false); // закрыть меню и снять блокировку скролла
+          // после анимации закрытия меню — нативный скролл с учётом scroll-padding-top
           setTimeout(function () {
-            var y = target.getBoundingClientRect().top + window.pageYOffset - 72;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-          }, 60);
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 320);
           return;
         }
       }
