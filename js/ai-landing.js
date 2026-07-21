@@ -187,11 +187,37 @@
     window.addEventListener('scroll', upd, { passive: true });
   }
 
+  /* Плавная прокрутка по якорям с offset = высота шапки (как на главной clatz.ru).
+     Ручной scrollTo надёжнее scroll-padding-top. Попап-кнопки (data-pop) не скроллят. */
+  function initAnchors() {
+    var hdr = document.querySelector('.hdr');
+    var nav = document.getElementById('nav');
+    var burger = document.getElementById('burger');
+    Array.prototype.forEach.call(document.querySelectorAll('a[href^="#"]'), function (link) {
+      link.addEventListener('click', function (e) {
+        if (link.hasAttribute('data-pop')) return;
+        var id = link.getAttribute('href');
+        if (!id || id === '#') return;
+        var target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        if (nav && nav.classList.contains('is-open')) {
+          nav.classList.remove('is-open');
+          if (burger) burger.classList.remove('is-open');
+        }
+        var headerH = hdr ? hdr.offsetHeight : 66;
+        var top = target.getBoundingClientRect().top + window.scrollY - headerH - 10;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     Array.prototype.forEach.call(document.querySelectorAll('form.js-lead'), initForm);
     initPop();
     initDemo();
     initBurger();
     initHeaderScroll();
+    initAnchors();
   });
 })();
