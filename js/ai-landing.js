@@ -164,30 +164,16 @@
       nav.classList.toggle('is-open', open);
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
       if (scrim) { scrim.hidden = !open; scrim.classList.toggle('is-open', open); }
-      document.body.style.overflow = open ? 'hidden' : '';
+      // overflow не блокируем: меню сплошное перекрывает фон, а блокировка ломает якорный скролл
     }
     var closeBtn = document.getElementById('nav-close');
     burger.addEventListener('click', function () { toggle(!nav.classList.contains('is-open')); });
     if (closeBtn) closeBtn.addEventListener('click', function () { toggle(false); });
     if (scrim) scrim.addEventListener('click', function () { toggle(false); });
+    // Клик по любой ссылке в меню — просто закрываем меню.
+    // Якорь (#features и т.п.) отрабатывает нативно с учётом scroll-padding-top на html.
     nav.addEventListener('click', function (e) {
-      var a = e.target.closest('a');
-      if (!a) return;
-      var href = a.getAttribute('href') || '';
-      // Якорь внутри страницы: закрыть меню, затем плавно доскроллить с отступом под шапку
-      if (href.length > 1 && href.charAt(0) === '#') {
-        var target = document.querySelector(href);
-        if (target) {
-          e.preventDefault();
-          toggle(false); // закрыть меню и снять блокировку скролла
-          // после анимации закрытия меню — нативный скролл с учётом scroll-padding-top
-          setTimeout(function () {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 320);
-          return;
-        }
-      }
-      toggle(false); // прочие ссылки (tel:, data-pop) — просто закрыть меню
+      if (e.target.closest('a')) toggle(false);
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggle(false); });
   }
